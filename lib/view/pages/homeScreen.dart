@@ -1,7 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
+import 'package:elecrama/view/pages/LoginScreens/visitorloginscreen.dart';
 import 'package:elecrama/view/pages/qrscreen.dart';
+import 'package:elecrama/view/widgets/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/utils.dart';
@@ -33,7 +35,9 @@ class _HomescreenState extends State<Homescreen> {
             icon: Icon(Icons.person, color: white),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.off(() => Multipleloginscreen());
+            },
             icon: Icon(Icons.star, color: white),
           ),
           IconButton(

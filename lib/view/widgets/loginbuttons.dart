@@ -5,7 +5,12 @@ class Loginbuttons extends StatelessWidget {
   final String text;
   final Color bgColor;
   final VoidCallback onpressed;
-  const Loginbuttons({super.key, required this.bgColor, required this.text,required this.onpressed});
+  const Loginbuttons({
+    super.key,
+    required this.bgColor,
+    required this.text,
+    required this.onpressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,7 @@ class Loginbuttons extends StatelessWidget {
       height: 50,
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onpressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),

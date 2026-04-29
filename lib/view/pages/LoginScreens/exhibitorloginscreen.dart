@@ -1,0 +1,86 @@
+import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/view/widgets/common_appbar.dart';
+import 'package:flutter/material.dart';
+
+class Exhibitorloginscreen extends StatefulWidget {
+  const Exhibitorloginscreen({super.key});
+
+  @override
+  State<Exhibitorloginscreen> createState() => _ExhibitorloginscreenState();
+}
+
+class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: appbar,
+      body: Container(
+        margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 30),
+            Center(
+              child: Text(
+                "Exhibitor Login",
+                style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+              ),
+            ),
+            SizedBox(height: 15),
+            SizedBox(
+              width: double.infinity,
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Enter Email Id",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 15),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                  ),
+                  backgroundColor: WidgetStatePropertyAll(blue),
+                ),
+                onPressed: () {},
+                child: Text(
+                  "Submit",
+                  style: TextStyle(color: white, fontSize: 15),
+                ),
+              ),
+            ),
+            SizedBox(height: 15),
+
+            Text(
+              "NOTE:",
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "- Please use the email ID that was submitted by your organization for your Exihibitor Badge registration",
+              style: TextStyle(fontSize: 17),
+            ),
+            SizedBox(height: 2),
+            Text(
+              "- You will recieve your One Time Login Code on your registered email.",
+              style: TextStyle(fontSize: 17),
+            ),
+            SizedBox(height: 2),
+            Text(
+              "- If your email is not registered then please contact you team responsible for submitting the data for 'Exhibitor Badges'",
+              style: TextStyle(fontSize: 17),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

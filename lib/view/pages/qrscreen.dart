@@ -1,10 +1,15 @@
 import 'package:elecrama/core/colors_theme.dart';
-import 'package:elecrama/view/widgets/common_apppbar.dart';
+import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:flutter/material.dart';
 
-class Qrscreen extends StatelessWidget {
+class Qrscreen extends StatefulWidget {
   const Qrscreen({super.key});
 
+  @override
+  State<Qrscreen> createState() => _QrscreenState();
+}
+
+class _QrscreenState extends State<Qrscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
