@@ -10,6 +10,9 @@ class Exhibitorloginscreen extends StatefulWidget {
 }
 
 class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
+  
+  final _formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,15 +30,21 @@ class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
               ),
             ),
             SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              child: TextField(
+            Form(
+              key: _formkey,
+              child: TextFormField(
                 decoration: InputDecoration(
                   hintText: "Enter Email Id",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "* required";
+                  }
+                  return null;
+                },
               ),
             ),
             SizedBox(height: 15),
@@ -50,7 +59,13 @@ class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
                   ),
                   backgroundColor: WidgetStatePropertyAll(blue),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  if (_formkey.currentState!.validate()) {
+                    print("Valid");
+                  } else {
+                    print("Invalid");
+                  }
+                },
                 child: Text(
                   "Submit",
                   style: TextStyle(color: white, fontSize: 15),

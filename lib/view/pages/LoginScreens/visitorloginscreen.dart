@@ -14,13 +14,32 @@ class _VisitorloginscreenState extends State<Visitorloginscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar,
-      body: Loginpage(
-        heading: "Visitor Login",
-        email: "Enter Visitor ID / Email",
-        password: "Enter Your Password",
-        forgetpassword: () {},
-        loginbuttonpress: () {},
-        register: () {},
+      body: Column(
+        children: [
+          Loginpage(
+            heading: "Visitor Login",
+            email: "Enter Visitor ID / Email",
+            password: "Enter Your Password",
+            forgetpassword: () {},
+            onLogin: (email, password) {
+              print(email);
+              print(password);
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Dont have an account?", style: TextStyle(fontSize: 15)),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  "Register",
+                  style: TextStyle(color: Colors.lightBlue[600], fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

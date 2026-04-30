@@ -1,9 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
-import 'package:elecrama/view/pages/LoginScreens/visitorloginscreen.dart';
 import 'package:elecrama/view/pages/qrscreen.dart';
-import 'package:elecrama/view/widgets/loginpage.dart';
+import 'package:elecrama/view_model/bannerviewmodel.dart' as viewModel;
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/utils.dart';
@@ -54,19 +53,29 @@ class _HomescreenState extends State<Homescreen> {
         child: Column(
           children: [
             CarouselSlider(
-              items: [
-                Image(image: AssetImage("assets/image1.jpeg")),
-                Image(image: AssetImage("assets/image2.jpeg")),
-                Image(image: AssetImage("assets/image3.jpeg")),
-                Image(image: AssetImage("assets/image4.jpeg")),
-                Image(image: AssetImage("assets/image5.jpeg")),
-              ],
-              options: CarouselOptions(
-                height: 150,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 4),
-                viewportFraction: 1,
-              ),
+              items: viewModel.banners.map((banner) {
+                return GestureDetector(
+                  onTap: () async {
+                    // open link
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      banner.logoUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(child: Icon(Icons.broken_image));
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
+              options: CarouselOptions(autoPlay: true, enlargeCenterPage: true),
             ),
 
             //expansiontile 1

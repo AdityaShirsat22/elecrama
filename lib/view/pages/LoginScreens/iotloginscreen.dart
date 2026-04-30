@@ -19,7 +19,9 @@ class _IotLoginScreenState extends State<IotLoginScreen> {
         email: "Enter your email ",
         password: "Enter Your Password",
         forgetpassword: () {},
-        loginbuttonpress: () {},
+        onLogin: (email, password) {
+          
+        },
       ),
     );
   }

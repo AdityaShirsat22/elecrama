@@ -19,7 +19,7 @@ class _IotLoginScreenState extends State<Dbsmloginscreen> {
         email: "Enter your delegate Id",
         password: "Enter Your Password",
         forgetpassword: () {},
-        loginbuttonpress: () {},
+        onLogin: (email, password) {},
       ),
     );
   }
