@@ -1,5 +1,4 @@
 import 'package:elecrama/core/colors_theme.dart';
-import 'package:elecrama/view/pages/homeScreen.dart';
 import 'package:elecrama/view/pages/qrscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +7,7 @@ final AppBar appbar = AppBar(
   backgroundColor: orange,
   leading: IconButton(
     onPressed: () {
-      Get.offAll(() => Homescreen());
+      Get.offAllNamed('/home');
     },
     icon: Icon(Icons.home, color: white),
   ),
