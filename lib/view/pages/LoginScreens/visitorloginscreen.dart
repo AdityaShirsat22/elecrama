@@ -1,6 +1,9 @@
+import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view/widgets/loginpage.dart';
+import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Visitorloginscreen extends StatefulWidget {
   const Visitorloginscreen({super.key});
@@ -10,6 +13,8 @@ class Visitorloginscreen extends StatefulWidget {
 }
 
 class _VisitorloginscreenState extends State<Visitorloginscreen> {
+  final AuthController _authController = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +26,14 @@ class _VisitorloginscreenState extends State<Visitorloginscreen> {
             email: "Enter Visitor ID / Email",
             password: "Enter Your Password",
             forgetpassword: () {},
-            onLogin: (email, password) {
-              print(email);
-              print(password);
+            onLogin: (email, password) async {
+              final success = await _authController.visitorlogin(
+                email,
+                password,
+              );
+              if (success) {
+                Get.offAllNamed(AppRoutes.visitorHome);
+              }
             },
           ),
           Row(

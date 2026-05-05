@@ -8,4 +8,6 @@ class AppRoutes {
   static const iotlogin = '/iotlogin';
   static const rbsmlogin = '/rbsmlogin';
   static const dbsmlogin = '/dbsmlogin';
+  static const  visitorHome = '/visitorHome';
+  static const visitorProfile = '/visitorProfile';
 }
