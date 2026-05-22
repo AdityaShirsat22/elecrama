@@ -2,11 +2,13 @@ import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/route_manager.dart';
 
-class Visitorsettingscreen extends StatelessWidget {
+class ExhibitorsettingScreen extends StatelessWidget {
   final controller = Get.find<AuthController>();
-  Visitorsettingscreen({super.key});
+
+  ExhibitorsettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +18,6 @@ class Visitorsettingscreen extends StatelessWidget {
         padding: EdgeInsetsGeometry.fromLTRB(15, 30, 15, 10),
         child: Column(
           children: [
-            ListTile(
-              shape: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(1),
-                borderSide: BorderSide(width: 0.1),
-              ),
-              leading: Icon(Icons.password, color: blue),
-              title: Text("Change Password"),
-              trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            ),
-            SizedBox(height: 20),
             ListTile(
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(1),

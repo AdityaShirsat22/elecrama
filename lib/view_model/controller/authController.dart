@@ -1,15 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:elecrama/data/model/exhibitorlists.dart';
+import 'package:elecrama/data/model/exhibitormodel.dart';
 import 'package:elecrama/data/repositories/auth_service.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
-import 'package:elecrama/data/model/visitorModel.dart';
+import 'package:elecrama/data/model/visitormodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final AuthService _service = Get.find<AuthService>();
   final Hiveservice _hive = Get.find<Hiveservice>();
-  var exhibitor = Rxn<Record>();
+  var exhibitor = Rxn<ExhibitorRecord>();
   var visitor = Rxn<VisitorRecord>();
+  Rx<ExhibitorRecord?> exhibitordetails = Rx<ExhibitorRecord?>(null);
 
   var isLoading = false.obs;
 
@@ -36,6 +39,18 @@ class AuthController extends GetxController {
 
   void logout() {
     _hive.loggout();
+  }
+
+  Future<void> loadSavedUser() async {
+    if (!_hive.isloggedIn()) return;
+    final role = _hive.getRole();
+    final email = _hive.getUserEmail();
+    if (role == 'exhibitor' && email != null) {
+      await getExhibitorDetails(email);
+    }
+    if (role == 'visitor' && email != null) {
+      await getVisitorDetails(email);
+    }
   }
 
   Future<bool> visitorlogin(String user, String pass) async {
@@ -118,6 +133,46 @@ class AuthController extends GetxController {
       }
 
       return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  //exhibitor details
+  Future<bool> getExhibitorDetails(String email) async {
+    try {
+      isLoading.value = true;
+
+      final data = await _service.fetchExhibitorDetails(email);
+
+      print("FETCHED DATA : $data");
+      print("NAME : ${data?.stName}");
+
+      if (data != null) {
+        exhibitor.value = data;
+
+        print("CONTROLLER DATA : ${exhibitor.value?.stName}");
+
+        return true;
+      }
+
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  RxList<ExhibitorLists> exhibitorList = <ExhibitorLists>[].obs;
+
+  Future<void> getExhitorsList() async {
+    try {
+      isLoading.value = true;
+
+      final data = await _service.fetchExhibitorLists();
+
+      exhibitorList.assignAll(data);
+    } catch (e) {
+      print(e);
     } finally {
       isLoading.value = false;
     }

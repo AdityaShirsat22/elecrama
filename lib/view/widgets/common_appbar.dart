@@ -1,5 +1,6 @@
 import 'package:elecrama/core/colors_theme.dart';
-import 'package:elecrama/view/pages/qrscreen.dart';
+import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
+import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,12 +15,38 @@ final AppBar appbar = AppBar(
   actions: [
     IconButton(
       onPressed: () {
-        Get.off(() => Qrscreen());
+        final authController = Get.find<AuthController>();
+        if (authController.isLoggedIn()) {
+          final role = authController.getRole();
+          if (role == 'visitor') {
+            Get.toNamed('/qrscreen');
+            return;
+          }
+          if (role == 'exhibitor') {
+            Get.toNamed('/qrscreen');
+            return;
+          }
+        }
+        Get.to(() => Multipleloginscreen());
       },
       icon: Icon(Icons.qr_code, color: white),
     ),
     IconButton(
-      onPressed: () {},
+      onPressed: () {
+        final authController = Get.find<AuthController>();
+        if (authController.isLoggedIn()) {
+          final role = authController.getRole();
+          if (role == 'visitor') {
+            Get.toNamed('/visitorHome');
+            return;
+          }
+          if (role == 'exhibitor') {
+            Get.toNamed('/exhibitorHome');
+            return;
+          }
+        }
+        Get.to(() => Multipleloginscreen());
+      },
       icon: Icon(Icons.person, color: white),
     ),
     IconButton(
@@ -27,7 +54,21 @@ final AppBar appbar = AppBar(
       icon: Icon(Icons.star, color: white),
     ),
     IconButton(
-      onPressed: () {},
+      onPressed: () {
+        final authController = Get.find<AuthController>();
+        if (authController.isLoggedIn()) {
+          final role = authController.getRole();
+          if (role == 'visitor') {
+            Get.toNamed('/visitorsetting');
+            return;
+          }
+          if (role == 'exhibitor') {
+            Get.toNamed('/exhibitorsetting');
+            return;
+          }
+        }
+        Get.to(() => Multipleloginscreen());
+      },
       icon: Icon(Icons.settings, color: white),
     ),
     IconButton(

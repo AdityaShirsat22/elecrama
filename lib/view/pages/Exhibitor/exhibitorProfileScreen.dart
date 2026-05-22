@@ -3,16 +3,17 @@ import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class VisitorProfileScreen extends StatelessWidget {
-  VisitorProfileScreen({super.key});
+class Exhibitorprofilescreen extends StatelessWidget {
+  Exhibitorprofilescreen({super.key});
 
   final controller = Get.find<AuthController>();
 
   Widget _infoRow(String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
+
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
             width: 120,
@@ -21,7 +22,7 @@ class VisitorProfileScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(
             child: Text(
               value,
@@ -39,7 +40,7 @@ class VisitorProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: appbar,
       body: Obx(() {
-        final data = controller.visitor.value;
+        final data = controller.exhibitor.value;
 
         if (data == null) {
           return Center(
@@ -50,34 +51,33 @@ class VisitorProfileScreen extends StatelessWidget {
           );
         }
 
-        final visitorId = data.userId ?? '';
-        final fullName = '${data.firstName ?? ''} ${data.lastName ?? ''}'
-            .trim();
-        final organisation = data.organisation ?? '';
-        final designation = data.designation ?? '';
-        final mobile = data.mobileNo ?? '';
-        final email = data.emailId ?? '';
-        final city = data.city ?? '';
-        final country = data.country ?? '';
+        final exhibitorBadgeNo = data.exhibitorBadgeNo ?? '';
+        final name = data.stName ?? '';
+        //final company = data.stCompany ?? '';
+        final designation = data.stDesignation ?? '';
+        final mobile = data.stMobileNo ?? '';
+        final email = data.stEmailId ?? '';
+        //final country = data.stcountry ?? '';
         final qrpath = data.qrPath;
+        final exhibitorid = data.exhibitorId ?? '';
+        final exhibitoruserid = data.exhibitorUserId ?? '';
 
         return SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 10),
-                // if (qrpath != null && qrpath.isNotEmpty)
-                //   Image.network(qrpath, height: 150, width: 150)
-                // else
-                //   SizedBox(height: 150),
+                Image.network(qrpath ?? '', height: 150, width: 150),
+
                 SizedBox(height: 30),
-                _infoRow("Visitor ID", visitorId),
+
+                _infoRow("Exhibitor Badge No", exhibitorBadgeNo),
                 Divider(),
-                _infoRow('Name', fullName),
+                _infoRow('Name', name),
                 Divider(),
-                _infoRow('Organization', organisation),
+                _infoRow('Exhibitor id', exhibitorid),
                 Divider(),
                 _infoRow('Designation', designation),
                 Divider(),
@@ -85,9 +85,7 @@ class VisitorProfileScreen extends StatelessWidget {
                 Divider(),
                 _infoRow('Email', email),
                 Divider(),
-                _infoRow('City', city),
-                Divider(),
-                _infoRow('Country', country),
+                _infoRow('Exhibitor User id', exhibitoruserid),
                 Divider(),
               ],
             ),

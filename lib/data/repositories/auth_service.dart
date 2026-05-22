@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/Api/auth_token.dart';
 import 'package:elecrama/Api/dio_client.dart';
-import 'package:elecrama/data/model/visitorModel.dart';
+import 'package:elecrama/data/model/exhibitorlists.dart';
+import 'package:elecrama/data/model/exhibitormodel.dart';
+import 'package:elecrama/data/model/visitormodel.dart';
 
 class AuthService {
   final Dio _dio = DioClient.dio;
@@ -56,10 +60,6 @@ class AuthService {
         ),
       );
 
-      print('API Response: ${response.data}');
-      print('Response Code: ${response.statusCode}');
-
-      // Parse the response as a VisitorRecord directly (not wrapped in a model)
       final visitorRecord = VisitorRecord.fromJson(response.data);
 
       print('Parsed VisitorRecord - Email: ${visitorRecord.emailId}');
@@ -72,6 +72,82 @@ class AuthService {
     } catch (e) {
       print('Error fetching visitor details: $e');
       return null;
+    }
+  }
+
+  //exhibitor login
+  Future<Response> exhibitorLogin({required String userId}) async {
+    final response = await _dio.get(
+      ApiConstants.exhibitorLogin,
+      queryParameters: {"EmailId": userId},
+      options: Options(
+        validateStatus: (_) => true,
+        headers: {'Authorization': 'Bearer ${AuthToken.token}'},
+      ),
+    );
+    return response;
+  }
+
+  //exhibitor details
+  Future<ExhibitorRecord?> fetchExhibitorDetails(String email) async {
+    try {
+      final response = await _dio.get(
+        ApiConstants.exhibitorLogin,
+        queryParameters: {"EmailId": email.trim()},
+        options: Options(
+          validateStatus: (_) => true,
+          headers: {'Authorization': 'Bearer ${AuthToken.token}'},
+        ),
+      );
+
+      final model = ExhibitorDetails.fromJson(response.data);
+
+      if (model.records != null && model.records!.isNotEmpty) {
+        return model.records!.first;
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  //otp generation
+  Future<Response> generateOtp(String email) async {
+    try {
+      final response = await _dio.get(
+        ApiConstants.otpgeneration,
+        queryParameters: {"EmailId": email},
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
+  //exhibitorlist
+  Future<List<ExhibitorLists>> fetchExhibitorLists() async {
+    try {
+      final response = await _dio.get(
+        ApiConstants.exhibitorlist,
+        options: Options(responseType: ResponseType.plain),
+        queryParameters: {
+          "SearchText": "",
+          "VisitorID": 0,
+          "blVisitor": 1,
+          "Category": "",
+          "Hall": "",
+          "Page": 1,
+          "country": "",
+        },
+      );
+
+      final List<dynamic> data = jsonDecode(response.data);
+
+      return data.map((e) => ExhibitorLists.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception("error fetching exhibitorlist $e");
     }
   }
 }

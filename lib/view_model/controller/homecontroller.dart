@@ -41,7 +41,6 @@ class HomeController extends GetxController {
         headers: {"Authorization": "Bearer ${AuthToken.token}"},
       ),
     );
-
     return Uint8List.fromList(response.data);
   }
 }

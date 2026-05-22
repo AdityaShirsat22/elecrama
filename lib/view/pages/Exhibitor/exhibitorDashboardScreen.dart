@@ -1,21 +1,19 @@
 import 'package:elecrama/core/colors_theme.dart';
-import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Visitordashboardscreen extends StatefulWidget {
-  const Visitordashboardscreen({super.key});
+class Exhibitordashboardscreen extends StatefulWidget {
+  const Exhibitordashboardscreen({super.key});
 
   @override
-  State<Visitordashboardscreen> createState() =>
+  State<Exhibitordashboardscreen> createState() =>
       _ExhibitordashboardscreenState();
 }
 
-class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
+class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
   final controller = Get.find<AuthController>();
-  var orange = Color.fromARGB(255, 255, 109, 24);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +25,7 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
           children: [
             SizedBox(height: 20),
             Text(
-              "Visitor Dashboard",
+              "Exhibitor Dashboard",
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 20),
@@ -78,7 +76,30 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                       },
                     ),
                   ),
-
+                  SizedBox(height: 10),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.meeting_room,
+                        color: Colors.blue[800],
+                      ),
+                      title: Text(
+                        'My B2B Meetings',
+                        style: TextStyle(
+                          fontSize: 18,
+                          //fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                      onTap: () {
+                        Get.snackbar(
+                          'Tap',
+                          'My B2B Meetings clicked',
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(height: 10),
                   Card(
                     child: ListTile(
@@ -127,6 +148,9 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                   SizedBox(height: 10),
                   Card(
                     child: ListTile(
+                      onTap: () {
+                        Get.toNamed('/exhibitorprofile');
+                      },
                       leading: Icon(Icons.person, color: Colors.blue[800]),
                       title: Text(
                         'View Profile',
@@ -136,26 +160,6 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                         ),
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 18),
-                      onTap: () async {
-                        final userId = controller.getUserEmail();
-                        if (userId == null || userId.isEmpty) {
-                          Get.snackbar(
-                            "Error",
-                            "No visitor ID found. Please login again.",
-                          );
-                          return;
-                        }
-
-                        bool success = await controller.getVisitorDetails(
-                          userId,
-                        );
-
-                        if (success) {
-                          Get.toNamed(AppRoutes.visitorprofile);
-                        } else {
-                          Get.snackbar("Error", "Failed to load profile");
-                        }
-                      },
                     ),
                   ),
                   const SizedBox(height: 20),

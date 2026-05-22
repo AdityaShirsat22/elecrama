@@ -1,6 +1,9 @@
 import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
+import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Qrscreen extends StatefulWidget {
   const Qrscreen({super.key});
@@ -21,7 +24,21 @@ class _QrscreenState extends State<Qrscreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  final authController = Get.find<AuthController>();
+                  if (authController.isLoggedIn()) {
+                    final role = authController.getRole();
+                    if (role == 'visitor') {
+                      Get.toNamed('/visitorprofile');
+                      return;
+                    }
+                    if (role == 'exhibitor') {
+                      Get.toNamed('/exhibitorprofile');
+                      return;
+                    }
+                  }
+                  Get.to(() => Multipleloginscreen());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: orange,
                   shape: RoundedRectangleBorder(

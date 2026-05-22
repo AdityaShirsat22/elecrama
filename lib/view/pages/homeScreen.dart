@@ -1,14 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
-import 'package:elecrama/view/pages/qrscreen.dart';
+
+import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:elecrama/view_model/controller/homecontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Homescreen extends GetView<HomeController> {
-  const Homescreen({super.key});
+  Homescreen({super.key});
 
   Future<void> openLink(String url) async {
     if (url.isEmpty) return;
@@ -25,24 +26,60 @@ class Homescreen extends GetView<HomeController> {
         actions: [
           IconButton(
             onPressed: () {
-              Get.to(() => Qrscreen());
+              final authController = Get.find<AuthController>();
+              if (authController.isLoggedIn()) {
+                final role = authController.getRole();
+                if (role == 'visitor') {
+                  Get.toNamed('/qrscreen');
+                  return;
+                }
+                if (role == 'exhibitor') {
+                  Get.toNamed('/qrscreen');
+                  return;
+                }
+              }
+              Get.to(() => Multipleloginscreen());
             },
             icon: Icon(Icons.qr_code, color: white),
           ),
           IconButton(
             onPressed: () {
+              final authController = Get.find<AuthController>();
+              if (authController.isLoggedIn()) {
+                final role = authController.getRole();
+                if (role == 'visitor') {
+                  Get.toNamed('/visitorHome');
+                  return;
+                }
+                if (role == 'exhibitor') {
+                  Get.toNamed('/exhibitorHome');
+                  return;
+                }
+              }
               Get.to(() => Multipleloginscreen());
             },
             icon: Icon(Icons.person, color: white),
           ),
           IconButton(
-            onPressed: () {
-              Get.off(() => Multipleloginscreen());
-            },
+            onPressed: () {},
             icon: Icon(Icons.star, color: white),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              final authController = Get.find<AuthController>();
+              if (authController.isLoggedIn()) {
+                final role = authController.getRole();
+                if (role == 'visitor') {
+                  Get.toNamed('/visitorsetting');
+                  return;
+                }
+                if (role == 'exhibitor') {
+                  Get.toNamed('/exhibitorsetting');
+                  return;
+                }
+              }
+              Get.to(() => Multipleloginscreen());
+            },
             icon: Icon(Icons.settings, color: white),
           ),
           IconButton(
@@ -120,10 +157,27 @@ class Homescreen extends GetView<HomeController> {
                           ),
                           title: Text("My Dashboard"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                          onTap: () {},
+                          onTap: () {
+                            final authController = Get.find<AuthController>();
+                            if (authController.isLoggedIn()) {
+                              final role = authController.getRole();
+                              if (role == 'visitor') {
+                                Get.toNamed('/visitorHome');
+                                return;
+                              }
+                              if (role == 'exhibitor') {
+                                Get.toNamed('/exhibitorHome');
+                                return;
+                              }
+                            }
+                            Get.to(() => Multipleloginscreen());
+                          },
                         ),
                         Divider(color: orange, thickness: 0.1),
                         ListTile(
+                          onTap: () async {
+                            Get.toNamed('/exhibitorlist');
+                          },
                           minTileHeight: 20,
                           leading: Icon(Icons.people, color: orange, size: 30),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),

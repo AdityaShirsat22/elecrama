@@ -11,7 +11,7 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => BannerRepository());
     Get.lazyPut(() => Hiveservice());
     Get.lazyPut(() => AuthService());
-    Get.lazyPut(() => AuthController());
+    Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => HomeController(Get.find()));
   }
 }

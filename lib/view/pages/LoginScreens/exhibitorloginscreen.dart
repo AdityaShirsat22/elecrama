@@ -1,6 +1,8 @@
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
+import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Exhibitorloginscreen extends StatefulWidget {
   const Exhibitorloginscreen({super.key});
@@ -10,8 +12,9 @@ class Exhibitorloginscreen extends StatefulWidget {
 }
 
 class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
-  
+  final controller = Get.find<AuthController>();
   final _formkey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
             Form(
               key: _formkey,
               child: TextFormField(
+                controller: emailController,
                 decoration: InputDecoration(
                   hintText: "Enter Email Id",
                   border: OutlineInputBorder(
@@ -59,11 +63,19 @@ class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
                   ),
                   backgroundColor: WidgetStatePropertyAll(blue),
                 ),
-                onPressed: () {
-                  if (_formkey.currentState!.validate()) {
-                    print("Valid");
-                  } else {
-                    print("Invalid");
+                onPressed: () async {
+                  if (_formkey.currentState?.validate() ?? false) {
+                    String email = emailController.text.trim();
+
+                    if (email.isEmpty) return;
+
+                    bool success = await controller.getExhibitorDetails(email);
+
+                    if (success) {
+                      Get.toNamed('/exhibitorDetails');
+                    } else {
+                      Get.snackbar("Error", "Email not found");
+                    }
                   }
                 },
                 child: Text(
