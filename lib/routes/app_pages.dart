@@ -14,6 +14,7 @@ import 'package:elecrama/view/pages/LoginScreens/visitorloginscreen.dart';
 import 'package:elecrama/view/pages/Visitor/visitorDashboardScreen.dart';
 import 'package:elecrama/view/pages/Visitor/visitorProfileScreen.dart';
 import 'package:elecrama/view/pages/Visitor/visitorSettingScreen.dart';
+import 'package:elecrama/view/pages/exhibitorcompanyinfo.dart';
 import 'package:elecrama/view/pages/exhibitorlist.dart';
 import 'package:elecrama/view/pages/homeScreen.dart';
 import 'package:elecrama/view/pages/qrscreen.dart';
@@ -60,5 +61,6 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.visitorsetting, page: () => Visitorsettingscreen()),
     GetPage(name: AppRoutes.exhibitorlist, page: () => ExhibitorList()),
+    GetPage(name: AppRoutes.exhibitorcompanyinfo, page: () => ExhibitorCompanyInfo()),
   ];
 }

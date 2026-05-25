@@ -22,4 +22,6 @@ class AppRoutes {
   static const visitorsetting = '/visitorsetting';
 
   static const exhibitorlist = '/exhibitorlist';
+
+  static const exhibitorcompanyinfo = '/exhibitorcompanyinfo';
 }

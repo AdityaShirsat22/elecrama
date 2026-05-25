@@ -1,3 +1,4 @@
+import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class ExhibitorList extends StatefulWidget {
 
 class _ExhibitorListState extends State<ExhibitorList> {
   final controller = Get.find<AuthController>();
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -29,11 +31,6 @@ class _ExhibitorListState extends State<ExhibitorList> {
         }
 
         final exhibitorLists = controller.exhibitorList;
-
-        if (exhibitorLists.isEmpty) {
-          return const Center(child: Text("No Exhibitors Found"));
-        }
-
         return Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Column(
@@ -54,7 +51,7 @@ class _ExhibitorListState extends State<ExhibitorList> {
                       const SizedBox(width: 10),
 
                       Text(
-                        "${exhibitorLists.length} / ${exhibitorLists.length}",
+                        "${exhibitorLists.length} / ${controller.totalExhibitorCount.value}",
                         style: const TextStyle(
                           fontSize: 19,
                           color: Colors.grey,
@@ -80,11 +77,36 @@ class _ExhibitorListState extends State<ExhibitorList> {
                   border: Border.all(color: Colors.black54),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const TextField(
+                child: TextField(
+                  controller: searchController,
+                  onChanged: (value) =>
+                      controller.getExhitorsList(search: value),
+                  textAlignVertical: TextAlignVertical.center,
+                  style: const TextStyle(fontSize: 14),
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    icon: Icon(Icons.search),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                    prefixIcon: const Icon(Icons.search, size: 22),
+                    prefixIconConstraints: const BoxConstraints(
+                      minWidth: 34,
+                      minHeight: 34,
+                    ),
                     hintText: "Search by Company / Products Name",
+                    hintStyle: const TextStyle(fontSize: 13),
+                    suffixIcon: searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.close, size: 20),
+                            onPressed: () {
+                              searchController.clear();
+                              controller.getExhitorsList();
+                            },
+                          )
+                        : null,
+                    suffixIconConstraints: const BoxConstraints(
+                      minWidth: 34,
+                      minHeight: 34,
+                    ),
                   ),
                 ),
               ),
@@ -100,43 +122,48 @@ class _ExhibitorListState extends State<ExhibitorList> {
                   itemBuilder: (context, index) {
                     final exhibitor = exhibitorLists[index];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  exhibitor.companyName,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                    return InkWell(
+                      onTap: () {
+                        Get.toNamed(AppRoutes.exhibitorcompanyinfo, arguments: exhibitor);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    exhibitor.companyName,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
 
-                                const SizedBox(height: 8),
+                                  const SizedBox(height: 8),
 
-                                Text(
-                                  "(${exhibitor.hallNo}    STALL : ${exhibitor.stallNo})",
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ],
+                                  Text(
+                                    "(${exhibitor.hallNo}    STALL : ${exhibitor.stallNo})",
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
 
-                          Icon(
-                            Icons.star,
-                            color: Colors.grey.shade400,
-                            size: 35,
-                          ),
+                            Icon(
+                              Icons.star,
+                              color: Colors.grey.shade400,
+                              size: 35,
+                            ),
 
-                          const SizedBox(width: 10),
+                            const SizedBox(width: 10),
 
-                          /// ARROW
-                          const Icon(Icons.arrow_forward_ios, size: 20),
-                        ],
+                            /// ARROW
+                            const Icon(Icons.arrow_forward_ios, size: 20),
+                          ],
+                        ),
                       ),
                     );
                   },

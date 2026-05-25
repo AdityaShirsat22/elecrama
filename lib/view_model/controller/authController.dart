@@ -163,18 +163,19 @@ class AuthController extends GetxController {
   }
 
   RxList<ExhibitorLists> exhibitorList = <ExhibitorLists>[].obs;
+  RxInt totalExhibitorCount = 0.obs;
 
-  Future<void> getExhitorsList() async {
+  Future<void> getExhitorsList({String search = ""}) async {
     try {
-      isLoading.value = true;
-
-      final data = await _service.fetchExhibitorLists();
+      final data = await _service.fetchExhibitorLists(searchText: search);
 
       exhibitorList.assignAll(data);
+
+      if (search.isEmpty) {
+        totalExhibitorCount.value = data.length;
+      }
     } catch (e) {
       print(e);
-    } finally {
-      isLoading.value = false;
     }
   }
 }
