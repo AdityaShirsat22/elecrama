@@ -5,6 +5,7 @@ import 'package:elecrama/view/pages/Exhibitor/exhibitorProfileScreen.dart';
 import 'package:elecrama/view/pages/Exhibitor/exhibitorSettingScreen.dart';
 import 'package:elecrama/view/pages/Exhibitor/exhibitor_details_screen.dart';
 import 'package:elecrama/view/pages/Exhibitor/logincodescreen.dart';
+import 'package:elecrama/view/pages/Favourite/visitorfavscreen.dart';
 import 'package:elecrama/view/pages/LoginScreens/b2bbuyerlogin.dart';
 import 'package:elecrama/view/pages/LoginScreens/dbsmloginscreen.dart';
 import 'package:elecrama/view/pages/LoginScreens/exhibitorloginscreen.dart';
@@ -60,7 +61,13 @@ class AppPages {
       page: () => ExhibitorsettingScreen(),
     ),
     GetPage(name: AppRoutes.visitorsetting, page: () => Visitorsettingscreen()),
+
     GetPage(name: AppRoutes.exhibitorlist, page: () => ExhibitorList()),
-    GetPage(name: AppRoutes.exhibitorcompanyinfo, page: () => ExhibitorCompanyInfo()),
+    GetPage(
+      name: AppRoutes.exhibitorcompanyinfo,
+      page: () => ExhibitorCompanyInfo(),
+    ),
+
+    GetPage(name: AppRoutes.visitorfav, page: () => VisitorFavoriteScreen()),
   ];
 }

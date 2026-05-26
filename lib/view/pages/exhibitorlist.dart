@@ -1,6 +1,7 @@
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
+import 'package:elecrama/view_model/controller/visitior_fav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +13,7 @@ class ExhibitorList extends StatefulWidget {
 }
 
 class _ExhibitorListState extends State<ExhibitorList> {
+  final favController = Get.find<FavoriteController>();
   final controller = Get.find<AuthController>();
   final TextEditingController searchController = TextEditingController();
 
@@ -19,6 +21,7 @@ class _ExhibitorListState extends State<ExhibitorList> {
   void initState() {
     super.initState();
     controller.getExhitorsList();
+    favController.getFavoriteList();
   }
 
   @override
@@ -124,7 +127,10 @@ class _ExhibitorListState extends State<ExhibitorList> {
 
                     return InkWell(
                       onTap: () {
-                        Get.toNamed(AppRoutes.exhibitorcompanyinfo, arguments: exhibitor);
+                        Get.toNamed(
+                          AppRoutes.exhibitorcompanyinfo,
+                          arguments: exhibitor,
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -152,11 +158,26 @@ class _ExhibitorListState extends State<ExhibitorList> {
                               ),
                             ),
 
-                            Icon(
-                              Icons.star,
-                              color: Colors.grey.shade400,
-                              size: 35,
-                            ),
+                            Obx(() {
+                              final isFav = favController.favoriteIds.contains(
+                                exhibitor.inid,
+                              );
+
+                              return IconButton(
+                                onPressed: () async {
+                                  await favController.toggleFavorite(
+                                    exhibitor.inid,
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.star,
+                                  color: isFav
+                                      ? Colors.yellow
+                                      : Colors.grey.shade400,
+                                  size: 35,
+                                ),
+                              );
+                            }),
 
                             const SizedBox(width: 10),
 

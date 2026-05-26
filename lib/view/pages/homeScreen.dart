@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
 
 import 'package:elecrama/view_model/controller/authController.dart';
@@ -61,7 +62,21 @@ class Homescreen extends GetView<HomeController> {
             icon: Icon(Icons.person, color: white),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              final authController = Get.find<AuthController>();
+              if (authController.isLoggedIn()) {
+                final role = authController.getRole();
+                if (role == 'visitor') {
+                  Get.toNamed(AppRoutes.visitorfav);
+                  return;
+                }
+                if (role == 'exhibitor') {
+                  Get.toNamed('/exhibitorHome');
+                  return;
+                }
+              }
+              Get.to(() => Multipleloginscreen());
+            },
             icon: Icon(Icons.star, color: white),
           ),
           IconButton(
