@@ -21,7 +21,6 @@ class _ExhibitorListState extends State<ExhibitorList> {
   void initState() {
     super.initState();
     controller.getExhitorsList();
-    favController.getFavoriteList();
   }
 
   @override
@@ -125,65 +124,69 @@ class _ExhibitorListState extends State<ExhibitorList> {
                   itemBuilder: (context, index) {
                     final exhibitor = exhibitorLists[index];
 
-                    return InkWell(
-                      onTap: () {
-                        Get.toNamed(
-                          AppRoutes.exhibitorcompanyinfo,
-                          arguments: exhibitor,
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    exhibitor.companyName,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                    return Container(
+                      key: ValueKey(exhibitor.inid),
+
+                      child: InkWell(
+                        onTap: () {
+                          Get.toNamed(
+                            AppRoutes.exhibitorcompanyinfo,
+                            arguments: exhibitor,
+                          );
+                        },
+
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      exhibitor.companyName,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
 
-                                  const SizedBox(height: 8),
+                                    const SizedBox(height: 8),
 
-                                  Text(
-                                    "(${exhibitor.hallNo}    STALL : ${exhibitor.stallNo})",
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            Obx(() {
-                              final isFav = favController.favoriteIds.contains(
-                                exhibitor.inid,
-                              );
-
-                              return IconButton(
-                                onPressed: () async {
-                                  await favController.toggleFavorite(
-                                    exhibitor.inid,
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.star,
-                                  color: isFav
-                                      ? Colors.yellow
-                                      : Colors.grey.shade400,
-                                  size: 35,
+                                    Text(
+                                      "(${exhibitor.hallNo}    STALL : ${exhibitor.stallNo})",
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            }),
+                              ),
 
-                            const SizedBox(width: 10),
+                              Obx(() {
+                                final isFav = favController.favoriteIds
+                                    .contains(exhibitor.inid);
 
-                            /// ARROW
-                            const Icon(Icons.arrow_forward_ios, size: 20),
-                          ],
+                                return IconButton(
+                                  onPressed: () async {
+                                    await favController.toggleFavorite(
+                                      exhibitor.inid,
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.star,
+                                    color: isFav
+                                        ? Colors.yellow
+                                        : Colors.grey.shade400,
+                                    size: 35,
+                                  ),
+                                );
+                              }),
+
+                              const SizedBox(width: 10),
+
+                              const Icon(Icons.arrow_forward_ios, size: 20),
+                            ],
+                          ),
                         ),
                       ),
                     );

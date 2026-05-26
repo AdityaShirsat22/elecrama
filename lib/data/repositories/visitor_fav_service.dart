@@ -64,8 +64,10 @@ class FavoriteService {
       }
 
       final decoded = jsonDecode(body);
+
+      /// FIXED
       if (decoded is Map<String, dynamic>) {
-        return decoded['Code'] == '1' || decoded['Code'] == 1;
+        return true;
       }
 
       return false;

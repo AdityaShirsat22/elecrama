@@ -49,16 +49,9 @@ class FavoriteController extends GetxController {
         return;
       }
 
-      if (favoriteIds.contains(exhibitorId)) {
-        favoriteIds.remove(exhibitorId);
-        favoriteList.removeWhere((e) => e.exhibitorId == exhibitorId);
-      } else {
-        favoriteIds.add(exhibitorId);
-      }
-
-      favoriteIds.refresh();
-      favoriteList.refresh();
-      update();
+      /// IMPORTANT
+      /// Reload actual server state
+      await getFavoriteList();
     } catch (e) {
       print('Toggle Favorite Error : $e');
     }

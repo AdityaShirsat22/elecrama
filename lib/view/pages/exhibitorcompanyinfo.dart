@@ -1,5 +1,6 @@
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/data/model/exhibitorlists.dart';
+import 'package:elecrama/data/model/visitor_fav_model.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/visitior_fav_controller.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,6 @@ import 'package:get/get.dart';
 
 class ExhibitorCompanyInfo extends StatefulWidget {
   ExhibitorCompanyInfo({super.key});
-
-  final ExhibitorLists exhibitor = Get.arguments;
 
   @override
   State<ExhibitorCompanyInfo> createState() =>
@@ -21,6 +20,48 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
   bool productExpanded = false;
   bool mediaExpanded = false;
 
+  ExhibitorLists _resolveExhibitor(dynamic argument) {
+    if (argument is ExhibitorLists) {
+      return argument;
+    }
+
+    if (argument is VisitorFavoriteModel) {
+      final favorite = argument;
+      return ExhibitorLists(
+        inid: favorite.exhibitorId,
+        guid: favorite.guid,
+        exhibitorType: '',
+        companyName: favorite.companyName,
+        txtConPerson: favorite.contactPerson,
+        txtConPreDesi: favorite.designation,
+        address: favorite.address,
+        txtTelNo: '',
+        txtMobile: favorite.mobile,
+        email: favorite.email,
+        stallNo: favorite.stallNo,
+        hallNo: favorite.hallNo,
+        txtUserEmailId: '',
+        txtUserId: '',
+        memType: '',
+        chairmanname: '',
+        chairmandesig: '',
+        txtcountry: favorite.country,
+        ddlRegion: '',
+        ddlState: '',
+        ddlCity: '',
+        txtPin: '',
+        productList: favorite.productList,
+        productListCatId: '',
+        visitorLikes: 0,
+        hallId: 0,
+        stStallId: '',
+        pavilion: '',
+      );
+    }
+
+    throw ArgumentError('Unsupported exhibitor argument: $argument');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -29,7 +70,7 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final exhibitor = widget.exhibitor;
+    final exhibitor = _resolveExhibitor(Get.arguments);
 
     return Scaffold(
       appBar: appbar,

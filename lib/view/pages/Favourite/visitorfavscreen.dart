@@ -1,5 +1,6 @@
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
+import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:elecrama/view_model/controller/visitior_fav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,18 +8,19 @@ import 'package:get/get.dart';
 class VisitorFavoriteScreen extends StatelessWidget {
   VisitorFavoriteScreen({super.key});
 
-  final FavoriteController controller = Get.find<FavoriteController>();
+  final FavoriteController favcontroller = Get.find<FavoriteController>();
+  final AuthController controller = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar,
       body: Obx(() {
-        if (controller.isLoading.value) {
+        if (favcontroller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (controller.favoriteList.isEmpty) {
+        if (favcontroller.favoriteList.isEmpty) {
           return const Center(child: Text("No Favorites Found"));
         }
 
@@ -36,7 +38,7 @@ class VisitorFavoriteScreen extends StatelessWidget {
                   const SizedBox(width: 10),
 
                   Text(
-                    controller.favoriteList.length.toString(),
+                    "${favcontroller.favoriteList.length} / ${controller.totalExhibitorCount.value}",
                     style: const TextStyle(fontSize: 20, color: Colors.grey),
                   ),
                 ],
@@ -46,12 +48,12 @@ class VisitorFavoriteScreen extends StatelessWidget {
 
               Expanded(
                 child: ListView.separated(
-                  itemCount: controller.favoriteList.length,
+                  itemCount: favcontroller.favoriteList.length,
 
                   separatorBuilder: (_, __) => const Divider(),
 
                   itemBuilder: (context, index) {
-                    final exhibitor = controller.favoriteList[index];
+                    final exhibitor = favcontroller.favoriteList[index];
 
                     return InkWell(
                       onTap: () {
@@ -88,7 +90,7 @@ class VisitorFavoriteScreen extends StatelessWidget {
 
                             IconButton(
                               onPressed: () {
-                                controller.toggleFavorite(
+                                favcontroller.toggleFavorite(
                                   exhibitor.exhibitorId,
                                 );
                               },
