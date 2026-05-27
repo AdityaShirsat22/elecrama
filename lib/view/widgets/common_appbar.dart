@@ -60,7 +60,7 @@ final AppBar appbar = AppBar(
             return;
           }
           if (role == 'exhibitor') {
-            Get.toNamed('/exhibitorsetting');
+            Get.toNamed(AppRoutes.exhibitorfav);
             return;
           }
         }

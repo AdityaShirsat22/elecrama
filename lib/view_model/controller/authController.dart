@@ -16,6 +16,17 @@ class AuthController extends GetxController {
 
   var isLoading = false.obs;
 
+  RxInt visitorId = 0.obs;
+  RxInt exhibitorId = 0.obs;
+  RxInt exhibitorUserId = 0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    loadSavedUser();
+  }
+
   bool isLoggedIn() {
     return _hive.isloggedIn();
   }
@@ -38,18 +49,21 @@ class AuthController extends GetxController {
   }
 
   void logout() {
-    _hive.loggout();
+    _hive.logout();
   }
 
   Future<void> loadSavedUser() async {
     if (!_hive.isloggedIn()) return;
     final role = _hive.getRole();
     final email = _hive.getUserEmail();
-    if (role == 'exhibitor' && email != null) {
-      await getExhibitorDetails(email);
-    }
+
     if (role == 'visitor' && email != null) {
       await getVisitorDetails(email);
+      visitorId.value = _hive.getVisitorId();
+    }
+    if (role == 'exhibitor' && email != null) {
+      await getExhibitorDetails(email);
+      exhibitorId.value = _hive.getExhibitorId();
     }
   }
 
@@ -65,21 +79,20 @@ class AuthController extends GetxController {
       final isSuccess = code == 1 || code == "1" || code == true;
 
       if (isSuccess) {
-        // Save userId for visitor
         saveUserEmail(user.trim());
-        // Save password for visitor
+
         _hive.saveUserPassword(pass.trim());
+
         setLoggedInUser('visitor');
-        Get.snackbar(
-          "Success",
-          "Login Successful",
-          snackPosition: SnackPosition.BOTTOM,
-          snackStyle: SnackStyle.FLOATING,
-          backgroundColor: Colors.green[700],
-          colorText: Colors.white,
-          borderRadius: 10,
-          margin: const EdgeInsets.all(16),
-        );
+
+        await getVisitorDetails(user.trim());
+
+        if (visitor.value != null) {
+          visitorId.value = visitor.value!.inId ?? 0;
+
+          _hive.saveVisitorId(visitorId.value);
+        }
+
         return true;
       } else {
         final message =
@@ -150,6 +163,7 @@ class AuthController extends GetxController {
 
       if (data != null) {
         exhibitor.value = data;
+        exhibitorUserId.value = int.tryParse(data.exhibitorUserId ?? '0') ?? 0;
 
         print("CONTROLLER DATA : ${exhibitor.value?.stName}");
 

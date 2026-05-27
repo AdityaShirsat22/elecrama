@@ -1,7 +1,7 @@
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
-import 'package:elecrama/view_model/controller/visitior_fav_controller.dart';
+import 'package:elecrama/view_model/controller/fav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +20,22 @@ class _ExhibitorListState extends State<ExhibitorList> {
   @override
   void initState() {
     super.initState();
-    controller.getExhitorsList();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      /// LOAD EXHIBITOR LIST
+      await controller.getExhitorsList();
+
+      final authController = Get.find<AuthController>();
+
+      /// LOAD VISITOR FAVORITES
+      if (authController.getRole() == 'visitor') {
+        await favController.getVisitorFavoriteList();
+      }
+      /// LOAD EXHIBITOR FAVORITES
+      else if (authController.getRole() == 'exhibitor') {
+        await favController.getExhibitorFavoriteList();
+      }
+    });
   }
 
   @override
@@ -28,6 +43,9 @@ class _ExhibitorListState extends State<ExhibitorList> {
     return Scaffold(
       appBar: appbar,
       body: Obx(() {
+        favController.visitorFavoriteIds.length;
+        favController.exhibitorFavoriteIds.length;
+
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -119,7 +137,7 @@ class _ExhibitorListState extends State<ExhibitorList> {
                 child: ListView.separated(
                   itemCount: exhibitorLists.length,
 
-                  separatorBuilder: (_, __) => const Divider(),
+                  separatorBuilder: (_, _) => const Divider(),
 
                   itemBuilder: (context, index) {
                     final exhibitor = exhibitorLists[index];
@@ -146,6 +164,8 @@ class _ExhibitorListState extends State<ExhibitorList> {
                                   children: [
                                     Text(
                                       exhibitor.companyName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -156,31 +176,81 @@ class _ExhibitorListState extends State<ExhibitorList> {
 
                                     Text(
                                       "(${exhibitor.hallNo}    STALL : ${exhibitor.stallNo})",
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                   ],
                                 ),
                               ),
 
-                              Obx(() {
-                                final isFav = favController.favoriteIds
-                                    .contains(exhibitor.inid);
+                              /// STAR
+                              SizedBox(
+                                width: 40,
+                                height: 30,
+                                child: Center(
+                                  child: Builder(
+                                    builder: (_) {
+                                      final role = controller.getRole();
 
-                                return IconButton(
-                                  onPressed: () async {
-                                    await favController.toggleFavorite(
-                                      exhibitor.inid,
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.star,
-                                    color: isFav
-                                        ? Colors.yellow
-                                        : Colors.grey.shade400,
-                                    size: 35,
+                                      bool isFav = false;
+
+                                      /// VISITOR
+                                      if (role == 'visitor') {
+                                        isFav = favController.visitorFavoriteIds
+                                            .contains(exhibitor.inid);
+                                      }
+                                      /// EXHIBITOR
+                                      else if (role == 'exhibitor') {
+                                        isFav = favController
+                                            .exhibitorFavoriteIds
+                                            .contains(exhibitor.inid);
+                                      }
+
+                                      return IconButton(
+                                        onPressed: () async {
+                                          /// NOT LOGGED IN
+                                          if (!controller.isLoggedIn()) {
+                                            Get.toNamed(
+                                              AppRoutes.multiplelogin,
+                                            );
+
+                                            return;
+                                          }
+
+                                          /// VISITOR
+                                          if (role == 'visitor') {
+                                            await favController
+                                                .toggleVisitorFavorite(
+                                                  exhibitor.inid,
+                                                );
+                                          }
+                                          /// EXHIBITOR
+                                          else if (role == 'exhibitor') {
+                                            await favController
+                                                .toggleExhibitorFavorite(
+                                                  exhibitor.inid,
+                                                );
+                                          }
+                                        },
+
+                                        padding: EdgeInsets.zero,
+
+                                        constraints: const BoxConstraints(),
+
+                                        icon: Icon(
+                                          Icons.star,
+
+                                          size: 30,
+
+                                          color: isFav
+                                              ? Colors.yellow
+                                              : Colors.grey,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              }),
+                                ),
+                              ),
 
                               const SizedBox(width: 10),
 

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Homescreen extends GetView<HomeController> {
-  Homescreen({super.key});
+  const Homescreen({super.key});
 
   Future<void> openLink(String url) async {
     if (url.isEmpty) return;
@@ -71,7 +71,7 @@ class Homescreen extends GetView<HomeController> {
                   return;
                 }
                 if (role == 'exhibitor') {
-                  Get.toNamed('/exhibitorHome');
+                  Get.toNamed(AppRoutes.exhibitorfav);
                   return;
                 }
               }

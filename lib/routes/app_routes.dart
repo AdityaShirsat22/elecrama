@@ -1,6 +1,6 @@
 class AppRoutes {
   static const home = '/home';
-
+static const multiplelogin = '/multiplelogin';
   static const exhibitorlogin = '/exhibitorlogin';
   static const visitorlogin = '/visitorlogin';
   static const b2blogin = '/b2blogin';
@@ -25,4 +25,5 @@ class AppRoutes {
   static const exhibitorcompanyinfo = '/exhibitorcompanyinfo';
 
   static const visitorfav = '/visitorfav';
+  static const exhibitorfav = '/exhibitorfav';
 }

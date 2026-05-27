@@ -5,24 +5,26 @@ import 'package:elecrama/view_model/controller/fav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class VisitorFavoriteScreen extends StatefulWidget {
-  const VisitorFavoriteScreen({super.key});
+class ExhibitorFavoriteScreen extends StatefulWidget {
+  const ExhibitorFavoriteScreen({super.key});
 
   @override
-  State<VisitorFavoriteScreen> createState() => _VisitorFavoriteScreenState();
+  State<ExhibitorFavoriteScreen> createState() =>
+      _ExhibitorFavoriteScreenState();
 }
 
-class _VisitorFavoriteScreenState extends State<VisitorFavoriteScreen> {
+class _ExhibitorFavoriteScreenState extends State<ExhibitorFavoriteScreen> {
   final FavoriteController favcontroller = Get.find<FavoriteController>();
 
   final AuthController controller = Get.find<AuthController>();
 
-   @override
+  @override
   void initState() {
     super.initState();
+
     /// LOAD FAVORITES
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      favcontroller.getVisitorFavoriteList();
+      favcontroller.getExhibitorFavoriteList();
     });
   }
 
@@ -35,7 +37,7 @@ class _VisitorFavoriteScreenState extends State<VisitorFavoriteScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (favcontroller.visitorFavoriteList.isEmpty) {
+        if (favcontroller.exhibitorFavoriteList.isEmpty) {
           return const Center(child: Text("No Favorites Found"));
         }
 
@@ -53,7 +55,7 @@ class _VisitorFavoriteScreenState extends State<VisitorFavoriteScreen> {
                   const SizedBox(width: 10),
 
                   Text(
-                    "${favcontroller.visitorFavoriteList.length} / ${controller.totalExhibitorCount.value}",
+                    "${favcontroller.exhibitorFavoriteList.length} / ${controller.totalExhibitorCount.value}",
                     style: const TextStyle(fontSize: 20, color: Colors.grey),
                   ),
                 ],
@@ -63,12 +65,13 @@ class _VisitorFavoriteScreenState extends State<VisitorFavoriteScreen> {
 
               Expanded(
                 child: ListView.separated(
-                  itemCount: favcontroller.visitorFavoriteList.length,
+                  itemCount: favcontroller.exhibitorFavoriteList.length,
 
                   separatorBuilder: (_, _) => const Divider(),
 
                   itemBuilder: (context, index) {
-                    final exhibitor = favcontroller.visitorFavoriteList[index];
+                    final exhibitor =
+                        favcontroller.exhibitorFavoriteList[index];
 
                     return InkWell(
                       onTap: () {
@@ -86,7 +89,7 @@ class _VisitorFavoriteScreenState extends State<VisitorFavoriteScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    exhibitor.companyName,
+                                    exhibitor.txtComName,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -104,9 +107,9 @@ class _VisitorFavoriteScreenState extends State<VisitorFavoriteScreen> {
                             ),
 
                             IconButton(
-                              onPressed: () {
-                                favcontroller.toggleVisitorFavorite(
-                                  exhibitor.exhibitorId,
+                              onPressed: () async {
+                                await favcontroller.toggleExhibitorFavorite(
+                                  exhibitor.inid,
                                 );
                               },
                               icon: const Icon(

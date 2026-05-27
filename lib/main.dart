@@ -1,8 +1,6 @@
 import 'package:elecrama/bindings/home_binding.dart';
 import 'package:elecrama/routes/app_pages.dart';
-import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/pages/homeScreen.dart';
-import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,10 +11,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('authBox');
-
-  HomeBinding().dependencies();
-  final authController = Get.find<AuthController>();
-  await authController.loadSavedUser();
 
   runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
 }
@@ -32,7 +26,6 @@ class MyApp extends StatelessWidget {
       builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
       home: Homescreen(),
-      initialRoute: AppRoutes.home,
       getPages: AppPages.routes,
       initialBinding: HomeBinding(),
     );

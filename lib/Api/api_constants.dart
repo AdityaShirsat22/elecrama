@@ -6,9 +6,12 @@ class ApiConstants {
   static const String exhibitorLogin = "$baseurl/getExhibitorUserLoginDetails";
   static const String otpgeneration = "$baseurl/GenerateOTPV2";
   static const String exhibitorlist = "$baseurl/SearchExhibitorNew";
-  static const String exhibitorfavlist =
-      "$baseurl/GetMyExhibitorListByExhibitor";
   static const String visitorfavlist = "$baseurl/GetMyExhibitorList";
   static const String visitorfavlistadddelete =
       "$baseurl/SaveDeleteStarVisitorbyExhibitor";
+
+  static const String exhibitorfavlist =
+      "$baseurl/GetMyExhibitorListByExhibitor";
+  static const String exhibitorfavlistadddelete =
+      "$baseurl/SaveDeleteStarExhibitorbyExhibitor";
 }

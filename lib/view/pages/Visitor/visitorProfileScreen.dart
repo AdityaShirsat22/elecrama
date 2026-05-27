@@ -1,3 +1,4 @@
+
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class VisitorProfileScreen extends StatelessWidget {
         final email = data.emailId ?? '';
         final city = data.city ?? '';
         final country = data.country ?? '';
-        final qrpath = data.qrPath;
+        //final qrpath = data.qrPath;
 
         return SingleChildScrollView(
           child: Padding(

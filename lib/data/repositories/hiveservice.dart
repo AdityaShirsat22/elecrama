@@ -3,6 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 class Hiveservice {
   final Box _box = Hive.box('authBox');
 
+  /// ROLE
   void saveRole(String role) {
     _box.put('role', role);
   }
@@ -11,22 +12,7 @@ class Hiveservice {
     return _box.get('role');
   }
 
-  void saveUserEmail(String email) {
-    _box.put('userEmail', email);
-  }
-
-  String? getUserEmail() {
-    return _box.get('userEmail');
-  }
-
-  void saveUserPassword(String password) {
-    _box.put('userPassword', password);
-  }
-
-  String? getUserPassword() {
-    return _box.get('userPassword');
-  }
-
+  /// LOGIN STATUS
   void setLoggedIn(bool value) {
     _box.put('isLoggedIn', value);
   }
@@ -35,7 +21,44 @@ class Hiveservice {
     return _box.get('isLoggedIn', defaultValue: false);
   }
 
-  void loggout() {
+  /// USER EMAIL
+  void saveUserEmail(String email) {
+    _box.put('userEmail', email);
+  }
+
+  String? getUserEmail() {
+    return _box.get('userEmail');
+  }
+
+  /// PASSWORD
+  void saveUserPassword(String password) {
+    _box.put('userPassword', password);
+  }
+
+  String? getUserPassword() {
+    return _box.get('userPassword');
+  }
+
+  /// VISITOR ID
+  void saveVisitorId(int id) {
+    _box.put('visitorId', id);
+  }
+
+  int getVisitorId() {
+    return _box.get('visitorId', defaultValue: 0);
+  }
+
+  /// EXHIBITOR ID
+  void saveExhibitorId(int id) {
+    _box.put('exhibitorId', id);
+  }
+
+  int getExhibitorId() {
+    return _box.get('exhibitorId', defaultValue: 0);
+  }
+
+  /// LOGOUT
+  void logout() {
     _box.clear();
   }
 }
