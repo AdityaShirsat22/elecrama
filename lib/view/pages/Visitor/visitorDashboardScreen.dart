@@ -70,11 +70,7 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 18),
                       onTap: () {
-                        Get.snackbar(
-                          'Tap',
-                          'Favorite Companies clicked',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
+                        Get.toNamed(AppRoutes.visitorfav);
                       },
                     ),
                   ),

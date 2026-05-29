@@ -14,4 +14,11 @@ class ApiConstants {
       "$baseurl/GetMyExhibitorListByExhibitor";
   static const String exhibitorfavlistadddelete =
       "$baseurl/SaveDeleteStarExhibitorbyExhibitor";
+
+  static const String exhibitorhalllist = "$baseurl//getExhibitorHallList";
+  static const String countrylist = "$baseurl/getCountryList";
+  static const String subcategorylist = "$baseurl/GetsubCategoryList";
+
+  static const String forgetvisitorpassword =
+      "https://elecrama25.ngauge.co.in/Visitors/Visitor_Forgot_Password.aspx";
 }

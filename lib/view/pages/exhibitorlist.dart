@@ -1,5 +1,6 @@
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
+import 'package:elecrama/view/widgets/exhibitor_filter_bottomsheet.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:elecrama/view_model/controller/fav_controller.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,9 @@ class _ExhibitorListState extends State<ExhibitorList> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       /// LOAD EXHIBITOR LIST
       await controller.getExhitorsList();
+      await controller.getHallList();
+      await controller.getCountryList();
+      await controller.getProductCategoryList();
 
       final authController = Get.find<AuthController>();
 
@@ -36,6 +40,13 @@ class _ExhibitorListState extends State<ExhibitorList> {
         await favController.getExhibitorFavoriteList();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    controller.exhibitorList.assignAll(controller.originalExhibitorList);
+
+    super.dispose();
   }
 
   @override
@@ -80,11 +91,20 @@ class _ExhibitorListState extends State<ExhibitorList> {
                     ],
                   ),
 
-                  Column(
-                    children: const [
-                      Icon(Icons.filter_alt, color: Colors.blue, size: 32),
-                      Text("Filter"),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Get.bottomSheet(
+                        const ExhibitorFilterBottomSheet(),
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                      );
+                    },
+                    child: Column(
+                      children: const [
+                        Icon(Icons.filter_alt, color: Colors.blue, size: 32),
+                        Text("Filter"),
+                      ],
+                    ),
                   ),
                 ],
               ),

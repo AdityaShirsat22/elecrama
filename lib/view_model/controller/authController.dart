@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:elecrama/data/model/exhibitorlists.dart';
+import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/data/model/exhibitormodel.dart';
 import 'package:elecrama/data/repositories/auth_service.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
@@ -13,12 +13,15 @@ class AuthController extends GetxController {
   var exhibitor = Rxn<ExhibitorRecord>();
   var visitor = Rxn<VisitorRecord>();
   Rx<ExhibitorRecord?> exhibitordetails = Rx<ExhibitorRecord?>(null);
+  final Dio _dio = Dio();
 
   var isLoading = false.obs;
 
   RxInt visitorId = 0.obs;
   RxInt exhibitorId = 0.obs;
   RxInt exhibitorUserId = 0.obs;
+
+ 
 
   @override
   void onInit() {
@@ -176,8 +179,24 @@ class AuthController extends GetxController {
     }
   }
 
-  RxList<ExhibitorLists> exhibitorList = <ExhibitorLists>[].obs;
+  //RxList<ExhibitorLists> exhibitorList = <ExhibitorLists>[].obs;
   RxInt totalExhibitorCount = 0.obs;
+
+  
+   //FILTER DATA
+  RxList exhibitorList = [].obs;
+  RxList originalExhibitorList = [].obs;
+  RxList hallList = [].obs;
+  RxList countryList = [].obs;
+  RxList productCategoryList = [].obs;
+
+  //SELECTED FILTERS
+  RxSet<String> selectedHalls = <String>{}.obs;
+  RxSet<String> selectedCountries = <String>{}.obs;
+  RxSet<String> selectedProductIds = <String>{}.obs;
+
+  //product category search
+  RxString productCategorySearch = ''.obs;
 
   Future<void> getExhitorsList({String search = ""}) async {
     try {
@@ -186,10 +205,89 @@ class AuthController extends GetxController {
       exhibitorList.assignAll(data);
 
       if (search.isEmpty) {
+        originalExhibitorList.assignAll(data);
         totalExhibitorCount.value = data.length;
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> getHallList() async {
+    try {
+      final response = await _dio.get(ApiConstants.exhibitorhalllist);
+
+      if (response.statusCode == 200) {
+        hallList.assignAll(response.data);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getCountryList() async {
+    try {
+      final response = await _dio.get(ApiConstants.countrylist);
+
+      if (response.statusCode == 200) {
+        countryList.assignAll(response.data);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getProductCategoryList() async {
+    try {
+      final response = await _dio.get(ApiConstants.subcategorylist);
+
+      if (response.statusCode == 200) {
+        productCategoryList.assignAll(response.data);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  //APPLY FILTERS
+  void applyFilters() {
+    List filtered = List.from(originalExhibitorList);
+
+    /// HALL FILTER
+    if (selectedHalls.isNotEmpty) {
+      filtered = filtered.where((e) {
+        return selectedHalls.contains(e.hallNo);
+      }).toList();
+    }
+
+    /// COUNTRY FILTER
+    if (selectedCountries.isNotEmpty) {
+      filtered = filtered.where((e) {
+        return selectedCountries.contains(e.txtcountry);
+      }).toList();
+    }
+
+    /// PRODUCT CATEGORY FILTER
+    if (selectedProductIds.isNotEmpty) {
+      filtered = filtered.where((e) {
+        final ids = (e.productListCatId ?? '')
+            .split(',')
+            .map((id) => id.trim())
+            .toList();
+
+        return selectedProductIds.any((selectedId) => ids.contains(selectedId));
+      }).toList();
+    }
+
+    exhibitorList.assignAll(filtered);
+  }
+
+  //clear filter
+  void clearFilters() {
+    selectedHalls.clear();
+    selectedCountries.clear();
+    selectedProductIds.clear();
+
+    exhibitorList.assignAll(originalExhibitorList);
   }
 }
