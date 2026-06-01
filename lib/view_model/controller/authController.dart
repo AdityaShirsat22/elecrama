@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:elecrama/Api/api_constants.dart';
+import 'package:elecrama/Api/dio_client.dart';
 import 'package:elecrama/data/model/exhibitormodel.dart';
 import 'package:elecrama/data/repositories/auth_service.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
@@ -13,7 +14,7 @@ class AuthController extends GetxController {
   var exhibitor = Rxn<ExhibitorRecord>();
   var visitor = Rxn<VisitorRecord>();
   Rx<ExhibitorRecord?> exhibitordetails = Rx<ExhibitorRecord?>(null);
-  final Dio _dio = Dio();
+  final Dio _dio = DioClient.dio;
 
   var isLoading = false.obs;
 

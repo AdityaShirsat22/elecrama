@@ -5,6 +5,7 @@ import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:elecrama/view_model/controller/fav_controller.dart';
+import 'package:elecrama/view_model/controller/meetingController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:elecrama/data/model/exhibitor_fav_model.dart';
@@ -23,6 +24,14 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
   bool aboutExpanded = false;
   bool productExpanded = false;
   bool mediaExpanded = false;
+  bool showRequestMeeting = false;
+  TextEditingController remarkController = TextEditingController();
+  late final Meetingcontroller meetingController;
+  String? selectedDate;
+  String? selectedMeetingPerson;
+  String? selectedTime;
+
+  int remarkCount = 0;
 
   ExhibitorLists _resolveExhibitor(dynamic argument) {
     /// EXHIBITOR LIST
@@ -36,59 +45,32 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
 
       return ExhibitorLists(
         inid: favorite.exhibitorId,
-
         guid: favorite.guid,
-
         exhibitorType: '',
-
         companyName: favorite.companyName,
-
         txtConPerson: favorite.contactPerson,
-
         txtConPreDesi: favorite.designation,
-
         address: favorite.address,
-
         txtTelNo: '',
-
         txtMobile: favorite.mobile,
-
         email: favorite.email,
-
         stallNo: favorite.stallNo,
-
         hallNo: favorite.hallNo,
-
         txtUserEmailId: '',
-
         txtUserId: '',
-
         memType: '',
-
         chairmanname: '',
-
         chairmandesig: '',
-
         txtcountry: favorite.country,
-
         ddlRegion: '',
-
         ddlState: '',
-
         ddlCity: '',
-
         txtPin: '',
-
         productList: favorite.productList,
-
         productListCatId: '',
-
         visitorLikes: 0,
-
         hallId: 0,
-
         stStallId: '',
-
         pavilion: '',
       );
     }
@@ -99,59 +81,32 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
 
       return ExhibitorLists(
         inid: favorite.inid,
-
         guid: favorite.guid,
-
         exhibitorType: '',
-
         companyName: favorite.txtComName,
-
         txtConPerson: favorite.contactPerson,
-
         txtConPreDesi: favorite.pcDesignation,
-
         address: favorite.address,
-
         txtTelNo: '',
-
         txtMobile: favorite.pcMobile,
-
         email: favorite.pcEmail,
-
         stallNo: favorite.stallNo,
-
         hallNo: favorite.hallNo,
-
         txtUserEmailId: '',
-
         txtUserId: favorite.txtUserId,
-
         memType: '',
-
         chairmanname: '',
-
         chairmandesig: '',
-
         txtcountry: favorite.txtcountry,
-
         ddlRegion: '',
-
         ddlState: favorite.state,
-
         ddlCity: favorite.city,
-
         txtPin: favorite.pin,
-
         productList: favorite.productList,
-
         productListCatId: favorite.productCatIds,
-
         visitorLikes: favorite.visitorLikes,
-
         hallId: favorite.hallId,
-
         stStallId: favorite.stStallId,
-
         pavilion: '',
       );
     }
@@ -165,6 +120,7 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
   void initState() {
     super.initState();
     favController.getVisitorFavoriteList();
+    meetingController = Get.find<Meetingcontroller>();
   }
 
   @override
@@ -185,26 +141,31 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
               /// TOP BUTTONS
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-
                 child: Row(
                   children: [
                     /// COMPANY INFO
                     Expanded(
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            showRequestMeeting = false;
+                          });
+                        },
 
                         child: Container(
                           height: 40,
                           decoration: BoxDecoration(
-                            color: orange,
+                            color: !showRequestMeeting ? orange : Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
 
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               "Company Info",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: !showRequestMeeting
+                                    ? Colors.white
+                                    : Colors.black,
                                 fontSize: 16,
                               ),
                             ),
@@ -219,22 +180,27 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          /// REQUEST MEETING CLICK
+                          setState(() {
+                            showRequestMeeting = true;
+                          });
                         },
-
                         child: Container(
                           height: 40,
-
                           decoration: BoxDecoration(
                             border: Border.all(color: orange),
-
+                            color: showRequestMeeting ? orange : Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
 
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               "Request Meeting",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: showRequestMeeting
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
                             ),
                           ),
                         ),
@@ -296,7 +262,6 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
                       ),
                     ),
 
-                    /// STAR
                     /// STAR
                     SizedBox(
                       width: 40,
@@ -402,122 +367,231 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
               const SizedBox(height: 20),
               Divider(),
 
-              /// ABOUT COMPANY
-              ExpansionTile(
-                title: const Text(
-                  "About Company",
-                  style: TextStyle(fontSize: 20),
-                ),
-
-                childrenPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-
-                      children: [
-                        Text(
-                          exhibitor.productList,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        const Text(
-                          "Contact Detail",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 15),
-                        Text(
-                          "Email : ${exhibitor.email}",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        Text(
-                          "Address : \n${exhibitor.address}",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        Text(
-                          "Country : ${exhibitor.txtcountry}",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        Text(
-                          "Contact Person : ${exhibitor.txtConPerson}",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        Text(
-                          "Designation : ${exhibitor.txtConPreDesi}",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              /// PRODUCT CATEGORY
-              ExpansionTile(
-                title: const Text(
-                  "Product Categories",
-                  style: TextStyle(fontSize: 20),
-                ),
-
-                childrenPadding: const EdgeInsets.fromLTRB(20, 5, 10, 15),
-
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-
-                    child: Text(
-                      exhibitor.productList,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ],
-              ),
-
-              /// DOWNLOAD & MEDIA
-              ExpansionTile(
-                title: const Text(
-                  "Download & Media",
-                  style: TextStyle(fontSize: 20),
-                ),
-
-                childrenPadding: const EdgeInsets.fromLTRB(20, 5, 10, 15),
-
-                children: const [
-                  Align(
-                    alignment: Alignment.centerLeft,
-
-                    child: Text(
-                      "No Media Available",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
+              showRequestMeeting
+                  ? buildRequestMeetingForm()
+                  : buildCompanyInfo(exhibitor),
             ],
           ),
         );
       }),
+    );
+  }
+
+  Widget buildRequestMeetingForm() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Request Meeting",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 20),
+
+          /// DATE
+          Obx(
+            () => DropdownButtonFormField<String>(
+              value: meetingController.exhibitionDates.isEmpty
+                  ? null
+                  : selectedDate,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              hint: const Text("Select Date"),
+              items: meetingController.exhibitionDates.map((date) {
+                return DropdownMenuItem(value: date, child: Text(date));
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedDate = value;
+                });
+              },
+            ),
+          ),
+
+          const SizedBox(height: 15),
+
+          /// PERSON
+          DropdownButtonFormField<String>(
+            decoration: const InputDecoration(border: OutlineInputBorder()),
+            hint: const Text("Select Meeting Person"),
+            items: const [],
+            onChanged: (value) {},
+          ),
+
+          const SizedBox(height: 15),
+
+          /// TIME
+          DropdownButtonFormField<String>(
+            value: selectedTime,
+            decoration: const InputDecoration(border: OutlineInputBorder()),
+            hint: const Text("Select time"),
+            items: meetingController.timeSlots.map((time) {
+              return DropdownMenuItem(value: time, child: Text(time));
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedTime = value;
+              });
+            },
+          ),
+
+          const SizedBox(height: 15),
+
+          /// REMARK
+          TextField(
+            controller: remarkController,
+            maxLength: 150,
+            maxLines: 5,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              counterText: '',
+            ),
+            onChanged: (value) {
+              setState(() {
+                remarkCount = value.length;
+              });
+            },
+          ),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              "$remarkCount/150",
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+
+          const SizedBox(height: 25),
+
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              onPressed: () {
+                /// SUBMIT API
+              },
+              child: const Text(
+                "Submit",
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildCompanyInfo(ExhibitorLists exhibitor) {
+    return Column(
+      children: [
+        /// ABOUT COMPANY
+        ExpansionTile(
+          title: const Text("About Company", style: TextStyle(fontSize: 20)),
+
+          childrenPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+                  Text(
+                    exhibitor.productList,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  const Text(
+                    "Contact Detail",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 15),
+                  Text(
+                    "Email : ${exhibitor.email}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Address : \n${exhibitor.address}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Country : ${exhibitor.txtcountry}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Contact Person : ${exhibitor.txtConPerson}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    "Designation : ${exhibitor.txtConPreDesi}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+        /// PRODUCT CATEGORY
+        ExpansionTile(
+          title: const Text(
+            "Product Categories",
+            style: TextStyle(fontSize: 20),
+          ),
+
+          childrenPadding: const EdgeInsets.fromLTRB(20, 5, 10, 15),
+
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+
+              child: Text(
+                exhibitor.productList,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+
+        /// DOWNLOAD & MEDIA
+        ExpansionTile(
+          title: const Text("Download & Media", style: TextStyle(fontSize: 20)),
+
+          childrenPadding: const EdgeInsets.fromLTRB(20, 5, 10, 15),
+
+          children: const [
+            Align(
+              alignment: Alignment.centerLeft,
+
+              child: Text("No Media Available", style: TextStyle(fontSize: 16)),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
