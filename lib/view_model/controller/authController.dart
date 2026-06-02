@@ -21,8 +21,7 @@ class AuthController extends GetxController {
   RxInt visitorId = 0.obs;
   RxInt exhibitorId = 0.obs;
   RxInt exhibitorUserId = 0.obs;
-
- 
+  RxInt visitorinId = 0.obs;
 
   @override
   void onInit() {
@@ -79,6 +78,8 @@ class AuthController extends GetxController {
         password: pass.trim(),
       );
       final data = response.data;
+      print("LOGIN RESPONSE");
+      print(response.data);
       final code = data["Code"];
       final isSuccess = code == 1 || code == "1" || code == true;
 
@@ -91,10 +92,17 @@ class AuthController extends GetxController {
 
         await getVisitorDetails(user.trim());
 
+        print("Visitor Value = ${visitor.value}");
+        print("Visitor InID = ${visitor.value?.inId}");
+
         if (visitor.value != null) {
           visitorId.value = visitor.value!.inId ?? 0;
+          _hive.saveVisitorinId(visitorId.value);
 
-          _hive.saveVisitorId(visitorId.value);
+          visitorinId.value =
+              int.tryParse(data["InID"]?.toString() ?? "0") ?? 0;
+          _hive.saveVisitorinId(visitorinId.value);
+          print("Hive Visitor ID = ${_hive.getVisitorinId()}");
         }
 
         return true;
@@ -146,6 +154,11 @@ class AuthController extends GetxController {
 
       if (data != null) {
         visitor.value = data;
+        final inId = data.inId ?? 0;
+
+        print("Saving Visitor InID = $inId");
+
+        _hive.saveVisitorinId(inId);
         return true;
       }
 
@@ -183,8 +196,7 @@ class AuthController extends GetxController {
   //RxList<ExhibitorLists> exhibitorList = <ExhibitorLists>[].obs;
   RxInt totalExhibitorCount = 0.obs;
 
-  
-   //FILTER DATA
+  //FILTER DATA
   RxList exhibitorList = [].obs;
   RxList originalExhibitorList = [].obs;
   RxList hallList = [].obs;

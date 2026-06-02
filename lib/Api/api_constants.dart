@@ -23,4 +23,8 @@ class ApiConstants {
       "https://elecrama25.ngauge.co.in/Visitors/Visitor_Forgot_Password.aspx";
 
       static const String exhibitordates = "$baseurl/GetExhibitionDates";
+
+      static const String visitormeetings = "$baseurl/GetVisitorMeeting";
+
+      static const String exhibitormeetings = "$baseurl/GetExhibitorUserMeeting";
 }

@@ -81,7 +81,7 @@ class VisitorRecord {
   });
 
   factory VisitorRecord.fromJson(Map<String, dynamic> json) => VisitorRecord(
-    inId: int.tryParse(json['inid'].toString()) ?? 0,
+    inId: int.tryParse(json['InID']?.toString() ?? '0') ?? 0,
     stGuid: json["stGuid"],
     userId: json["UserId"]?.toString(),
     salutation: json["Salutation"],

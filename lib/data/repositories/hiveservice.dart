@@ -57,6 +57,15 @@ class Hiveservice {
     return _box.get('exhibitorId', defaultValue: 0);
   }
 
+   /// VISITOR inID
+  void saveVisitorinId(int id) {
+    _box.put('visitorinId', id);
+  }
+
+  int getVisitorinId() {
+    return _box.get('visitorinId', defaultValue: 0);
+  }
+
   /// LOGOUT
   void logout() {
     _box.clear();

@@ -20,6 +20,7 @@ import 'package:elecrama/view/pages/Visitor/visitorSettingScreen.dart';
 import 'package:elecrama/view/pages/exhibitorcompanyinfo.dart';
 import 'package:elecrama/view/pages/exhibitorlist.dart';
 import 'package:elecrama/view/pages/homeScreen.dart';
+import 'package:elecrama/view/pages/meetings/visitorMeetings.dart';
 import 'package:elecrama/view/pages/qrscreen.dart';
 import 'package:get/get.dart';
 
@@ -76,5 +77,11 @@ class AppPages {
       page: () => ExhibitorFavoriteScreen(),
     ),
     GetPage(name: AppRoutes.multiplelogin, page: () => Multipleloginscreen()),
+
+    GetPage(
+      name: AppRoutes.visitormeetings,
+      page: () => VisitorMeetings(),
+      binding: HomeBinding(),
+    ),
   ];
 }

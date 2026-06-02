@@ -26,4 +26,6 @@ static const multiplelogin = '/multiplelogin';
 
   static const visitorfav = '/visitorfav';
   static const exhibitorfav = '/exhibitorfav';
+
+  static const visitormeetings = '/visitorMeetings';
 }

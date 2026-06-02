@@ -31,6 +31,8 @@ class AuthService {
           headers: {'Authorization': 'Bearer ${AuthToken.token}'},
         ),
       );
+      print("LOGIN RESPONSE");
+      print(response.data);
       return response;
     } catch (e) {
       if (e is DioException && e.response != null) {
@@ -128,42 +130,35 @@ class AuthService {
 
   //exhibitorlist
   Future<List<ExhibitorLists>> fetchExhibitorLists({
-  String searchText = "",
-}) async {
-  try {
-    final response = await _dio.get(
-      ApiConstants.exhibitorlist,
-      options: Options(
-        responseType: ResponseType.plain,
-        headers: {
-          "Accept": "application/json",
-          "User-Agent": "Mozilla/5.0",
+    String searchText = "",
+  }) async {
+    try {
+      final response = await _dio.get(
+        ApiConstants.exhibitorlist,
+        options: Options(
+          responseType: ResponseType.plain,
+          headers: {"Accept": "application/json", "User-Agent": "Mozilla/5.0"},
+        ),
+        queryParameters: {
+          "SearchText": searchText,
+          "VisitorID": 0,
+          "blVisitor": 1,
+          "Category": "",
+          "Hall": "",
+          "Page": 1,
+          "country": "",
         },
-      ),
-      queryParameters: {
-        "SearchText": searchText,
-        "VisitorID": 0,
-        "blVisitor": 1,
-        "Category": "",
-        "Hall": "",
-        "Page": 1,
-        "country": "",
-      },
-    );
+      );
 
-    if (response.data == null ||
-        response.data.toString().trim().isEmpty) {
-      return [];
+      if (response.data == null || response.data.toString().trim().isEmpty) {
+        return [];
+      }
+
+      final List<dynamic> data = jsonDecode(response.data);
+
+      return data.map((e) => ExhibitorLists.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception("error fetching exhibitorlist $e");
     }
-
-    final List<dynamic> data = jsonDecode(response.data);
-
-    return data
-        .map((e) => ExhibitorLists.fromJson(e))
-        .toList();
-
-  } catch (e) {
-    throw Exception("error fetching exhibitorlist $e");
   }
-}
 }

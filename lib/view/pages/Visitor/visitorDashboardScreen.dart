@@ -88,11 +88,8 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 18),
                       onTap: () {
-                        Get.snackbar(
-                          'Tap',
-                          'My Meetings clicked',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
+                        print("Opening Visitor Meetings");
+                        Get.toNamed(AppRoutes.visitormeetings);
                       },
                     ),
                   ),
