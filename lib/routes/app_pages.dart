@@ -20,6 +20,7 @@ import 'package:elecrama/view/pages/Visitor/visitorSettingScreen.dart';
 import 'package:elecrama/view/pages/exhibitorcompanyinfo.dart';
 import 'package:elecrama/view/pages/exhibitorlist.dart';
 import 'package:elecrama/view/pages/homeScreen.dart';
+import 'package:elecrama/view/pages/meetings/exhibitorMeetings.dart';
 import 'package:elecrama/view/pages/meetings/visitorMeetings.dart';
 import 'package:elecrama/view/pages/qrscreen.dart';
 import 'package:get/get.dart';
@@ -82,6 +83,12 @@ class AppPages {
       name: AppRoutes.visitormeetings,
       page: () => VisitorMeetings(),
       binding: HomeBinding(),
+    ),
+
+    GetPage(
+      name: AppRoutes.exhibitormeetings,
+      page: () => ExhibitorMeetings(),
+      binding: HomeBinding(), 
     ),
   ];
 }

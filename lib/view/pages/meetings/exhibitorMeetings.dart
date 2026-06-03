@@ -1,24 +1,24 @@
-import 'package:elecrama/data/model/visitormeetingmodel.dart';
+import 'package:elecrama/data/model/exhibitormeetingmodel.dart';
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/meetingController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class VisitorMeetings extends StatefulWidget {
-  const VisitorMeetings({super.key});
+class ExhibitorMeetings extends StatefulWidget {
+  const ExhibitorMeetings({super.key});
 
   @override
-  State<VisitorMeetings> createState() => _VisitorMeetingsState();
+  State<ExhibitorMeetings> createState() => _ExhibitorMeetingState();
 }
 
-class _VisitorMeetingsState extends State<VisitorMeetings> {
+class _ExhibitorMeetingState extends State<ExhibitorMeetings> {
   final Meetingcontroller meetcontroller = Get.find<Meetingcontroller>();
 
   @override
   void initState() {
     super.initState();
-    meetcontroller.getVisitorMeetings();
+    meetcontroller.getExhibitorMeetings();
   }
 
   @override
@@ -52,18 +52,18 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
 
           Expanded(
             child: Obx(() {
-              if (meetcontroller.visitorGroupedMeetings.isEmpty) {
+              if (meetcontroller.groupedExhibitorMeetings.isEmpty) {
                 return const Center(child: Text("No Meetings Found"));
               }
 
               return ListView.builder(
-                itemCount: meetcontroller.visitorGroupedMeetings.keys.length,
+                itemCount: meetcontroller.groupedExhibitorMeetings.keys.length,
                 itemBuilder: (context, index) {
-                  String date = meetcontroller.visitorGroupedMeetings.keys
+                  String date = meetcontroller.groupedExhibitorMeetings.keys
                       .elementAt(index);
 
-                  List<VisitorMeetingModel> meetings =
-                      meetcontroller.visitorGroupedMeetings[date] ?? [];
+                  List<ExhibitorMeetingModel> meetings =
+                      meetcontroller.groupedExhibitorMeetings[date] ?? [];
 
                   return Theme(
                     data: Theme.of(
@@ -97,23 +97,26 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
     );
   }
 
-  Widget buildMeetingCard(VisitorMeetingModel meeting) {
+  Widget buildMeetingCard(ExhibitorMeetingModel meeting) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            meeting.txtConPerson?.trim() ?? '',
+            meeting.visitorName?.trim() ?? '',
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 4),
 
-          Text(meeting.txtComName ?? '', style: const TextStyle(fontSize: 16)),
+          Text(
+            meeting.organisation ?? '',
+            style: const TextStyle(fontSize: 16),
+          ),
 
           Text(
-            meeting.txtConDesi ?? '',
+            meeting.designation ?? '',
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
 

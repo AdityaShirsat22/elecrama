@@ -28,4 +28,5 @@ static const multiplelogin = '/multiplelogin';
   static const exhibitorfav = '/exhibitorfav';
 
   static const visitormeetings = '/visitorMeetings';
+  static const exhibitormeetings = '/exhibitormeetings';
 }

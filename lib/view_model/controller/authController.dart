@@ -182,6 +182,12 @@ class AuthController extends GetxController {
         exhibitor.value = data;
         exhibitorUserId.value = int.tryParse(data.exhibitorUserId ?? '0') ?? 0;
 
+        final inId = int.tryParse(data.exhibitorUserId ?? '0') ?? 0;
+
+        print("Saving Exhibitor InID = $inId");
+
+        _hive.saveExhibitorinId(inId);
+
         print("CONTROLLER DATA : ${exhibitor.value?.stName}");
 
         return true;

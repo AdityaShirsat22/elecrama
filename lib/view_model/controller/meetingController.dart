@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/Api/dio_client.dart';
+import 'package:elecrama/data/model/exhibitormeetingmodel.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,20 +68,20 @@ class Meetingcontroller extends GetxController {
     }
   }
 
-  RxList<VisitorMeetingModel> meetingList = <VisitorMeetingModel>[].obs;
-  RxMap<String, List<VisitorMeetingModel>> groupedMeetings =
+  RxList<VisitorMeetingModel> visitorMeetingList = <VisitorMeetingModel>[].obs;
+  RxMap<String, List<VisitorMeetingModel>> visitorGroupedMeetings =
       <String, List<VisitorMeetingModel>>{}.obs;
 
-  void groupMeetingsByDate() {
+  void groupVisitorMeetingsByDate() {
     Map<String, List<VisitorMeetingModel>> temp = {};
-    for (var meeting in meetingList) {
+    for (var meeting in visitorMeetingList) {
       String date = meeting.meetingdate ?? '';
       if (!temp.containsKey(date)) {
         temp[date] = [];
       }
       temp[date]!.add(meeting);
     }
-    groupedMeetings.value = temp;
+    visitorGroupedMeetings.value = temp;
   }
 
   Future<void> getVisitorMeetings() async {
@@ -98,15 +99,59 @@ class Meetingcontroller extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        meetingList.value = (response.data as List)
+        visitorMeetingList.value = (response.data as List)
             .map((e) => VisitorMeetingModel.fromJson(e))
             .toList();
 
-        groupMeetingsByDate();
+        groupVisitorMeetingsByDate();
 
         print(response.data);
-        print(meetingList.length);
-        print(groupedMeetings);
+        print(visitorMeetingList.length);
+        print(visitorGroupedMeetings);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  //exhibitor meeting
+  RxList<ExhibitorMeetingModel> exhibitorMeetingList =
+      <ExhibitorMeetingModel>[].obs;
+  RxMap<String, List<ExhibitorMeetingModel>> groupedExhibitorMeetings =
+      <String, List<ExhibitorMeetingModel>>{}.obs;
+
+  void groupExhibitorMeetingsByDate() {
+    Map<String, List<ExhibitorMeetingModel>> temp = {};
+    for (var meeting in exhibitorMeetingList) {
+      String date = meeting.meetingdate ?? '';
+      if (!temp.containsKey(date)) {
+        temp[date] = [];
+      }
+      temp[date]!.add(meeting);
+    }
+    groupedExhibitorMeetings.value = temp;
+  }
+
+  Future<void> getExhibitorMeetings() async {
+    try {
+      final exhibitorinId = hiveService.getExhibitorinId();
+      print("Exhibitor InID From Hive = $exhibitorinId");
+
+      final response = await _dio.get(
+        ApiConstants.exhibitormeetings,
+        queryParameters: {'ExhibitorUserId': exhibitorinId, 'Meetingdate': ''},
+      );
+
+      if (response.statusCode == 200) {
+        exhibitorMeetingList.value = (response.data as List)
+            .map((e) => ExhibitorMeetingModel.fromJson(e))
+            .toList();
+
+        groupExhibitorMeetingsByDate();
+
+        print(response.data);
+        print(exhibitorMeetingList.length);
+        print(groupedExhibitorMeetings);
       }
     } catch (e) {
       debugPrint(e.toString());

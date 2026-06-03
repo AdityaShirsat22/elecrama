@@ -68,11 +68,7 @@ class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 18),
                       onTap: () {
-                        Get.snackbar(
-                          'Tap',
-                          'Favorite Companies clicked',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
+                        Get.toNamed('/exhibitorfav');
                       },
                     ),
                   ),
@@ -113,11 +109,7 @@ class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 18),
                       onTap: () {
-                        Get.snackbar(
-                          'Tap',
-                          'My Meetings clicked',
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
+                        Get.toNamed('/exhibitormeetings');
                       },
                     ),
                   ),
