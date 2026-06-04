@@ -439,6 +439,7 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
             }
 
             return DropdownButtonFormField<String>(
+              isExpanded: true,
               value: selectedMeetingPerson,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               hint: const Text("Select Meeting Person"),
@@ -514,8 +515,34 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
                   borderRadius: BorderRadius.circular(0),
                 ),
               ),
-              onPressed: () {
-                /// SUBMIT API
+              onPressed: () async {
+                final exhibitor = _resolveExhibitor(Get.arguments);
+
+                if (selectedDate == null) {
+                  Get.snackbar("Validation", "Please select date");
+                  return;
+                }
+
+                if (selectedMeetingPerson == null) {
+                  Get.snackbar("Validation", "Please select meeting person");
+                  return;
+                }
+
+                if (selectedTime == null) {
+                  Get.snackbar("Validation", "Please select time");
+                  return;
+                }
+
+                final success = await meetingController.saveMeeting(
+                  exhibitorId: exhibitor.inid,
+                  meetPersonId: selectedMeetingPerson!,
+                  meetingDate: selectedDate!,
+                  selectedTime: selectedTime!,
+                  role: controller.getRole(),
+                );
+                if (success) {
+                  showMeetingSuccessDialog();
+                }
               },
               child: const Text(
                 "Submit",
@@ -632,6 +659,79 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
           ],
         ),
       ],
+    );
+  }
+
+  void showMeetingSuccessDialog() {
+    Get.dialog(
+      
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Your Meeting Request has been submitted",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "Please select an option from below",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+
+            const SizedBox(height: 25),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                onPressed: () {
+                  Get.back();
+
+                  final role = controller.getRole();
+
+                  if (role == 'visitor') {
+                    Get.toNamed(AppRoutes.visitormeetings);
+                  } else {
+                    Get.toNamed(AppRoutes.exhibitormeetings);
+                  }
+                },
+                child: const Text(
+                  "GO TO MY MEETINGS",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                onPressed: () {
+                  Get.back();
+
+                  // Back to previous screen
+                  Get.back();
+                },
+                child: const Text(
+                  "GO BACK TO EXHIBITOR LIST",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: false,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/data/model/visitormeetingmodel.dart';
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
@@ -25,6 +26,13 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appbar,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blueAccent,
+        onPressed: () async {
+          await meetcontroller.getVisitorMeetings();
+        },
+        child: const Icon(Icons.refresh, color: Colors.white),
+      ),
       body: Column(
         children: [
           Padding(
@@ -72,6 +80,7 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
                     child: ExpansionTile(
                       tilePadding: const EdgeInsets.symmetric(horizontal: 16),
 
+                      //childrenPadding: EdgeInsets.zero,
                       title: Text(
                         date,
                         style: const TextStyle(
@@ -83,9 +92,13 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
                       iconColor: Colors.blue,
                       collapsedIconColor: Colors.black,
 
-                      children: meetings
-                          .map((meeting) => buildMeetingCard(meeting))
-                          .toList(),
+                      children: meetings.map((meeting) {
+                        return Container(
+                          width: double.infinity,
+                          alignment: Alignment.centerLeft,
+                          child: buildMeetingCard(meeting),
+                        );
+                      }).toList(),
                     ),
                   );
                 },
@@ -99,7 +112,7 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
 
   Widget buildMeetingCard(VisitorMeetingModel meeting) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.only(left: 20, right: 16, top: 10, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -123,15 +136,63 @@ class _VisitorMeetingsState extends State<VisitorMeetings> {
 
           Text("Time : ${meeting.meetingTime}"),
 
-          // const SizedBox(height: 5),
+          const SizedBox(height: 8),
 
-          // const Text(
-          //   "Request is in Approval",
-          //   style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-          // ),
-          const Divider(),
+          buildVisitorMeetingStatus(meeting),
         ],
       ),
     );
+  }
+
+  Widget buildVisitorMeetingStatus(VisitorMeetingModel meeting) {
+    if (meeting.blExhibitorStatus == 0) {
+      return Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Request is in Approval",
+            style: TextStyle(color: Colors.green, fontSize: 16),
+          ),
+
+          const SizedBox(height: 10),
+
+          // SizedBox(
+          //   width: 120,
+          //   child: ElevatedButton(
+          //     onPressed: () async {
+          //       final success = await meetcontroller.cancelVisitorMeeting(
+          //         meeting.meetingId ?? 0,
+          //       );
+
+          //       if (success) {
+          //         await meetcontroller.getVisitorMeetings();
+          //       }
+          //     },
+          //     child: const Text("Cancel"),
+          //   ),
+          // ),
+        ],
+      );
+    }
+
+    if (meeting.blExhibitorStatus == 1) {
+      return const Text(
+        "Accepted",
+        style: TextStyle(
+          color: Colors.green,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+    }
+
+    if (meeting.blExhibitorStatus == 2) {
+      return const Text(
+        "Cancelled",
+        style: TextStyle(color: Colors.red, fontSize: 18),
+      );
+    }
+
+    return const SizedBox();
   }
 }

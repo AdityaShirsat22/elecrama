@@ -226,7 +226,7 @@ class Meetingcontroller extends GetxController {
     return {'hour': hour.toString(), 'minute': minute};
   }
 
-  Future<void> saveMeeting({
+  Future<bool> saveMeeting({
     required int exhibitorId,
     required String meetPersonId,
     required String meetingDate,
@@ -251,7 +251,7 @@ class Meetingcontroller extends GetxController {
       print("MeetingHr : ${timeData['hour']}");
       print("MeetingMM : ${timeData['minute']}");
       print("CreatedBy : $createdBy");
-      final response = await _dio.get(
+      final response = await _dio.post(
         ApiConstants.saveVisitorMeeting,
         queryParameters: {
           "VisitorId": visitorId,
@@ -267,14 +267,85 @@ class Meetingcontroller extends GetxController {
           response.data is List &&
           response.data.isNotEmpty) {
         final result = response.data.first;
-        Get.snackbar("Success", result["Message"] ?? "Meeting Saved");
-        getVisitorMeetings();
-        getExhibitorMeetings();
+
+        if (result["Code"] == "1") {
+          if (role == 'visitor') {
+            await getVisitorMeetings();
+          } else {
+            await getExhibitorMeetings();
+          }
+
+          return true;
+        }
       }
+
+      return false;
     } catch (e) {
       debugPrint("Save Meeting Error : $e");
 
       Get.snackbar("Error", "Failed to save meeting");
+
+      return false;
+    }
+  }
+
+  Future<bool> acceptMeeting(int meetingId) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.acceptExhibitorMeeting,
+        queryParameters: {"MeetingId": meetingId},
+      );
+
+      if (response.statusCode == 200 &&
+          response.data is List &&
+          response.data.isNotEmpty) {
+        return response.data.first["Code"] == "1";
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint("Accept Meeting Error : $e");
+      return false;
+    }
+  }
+
+  Future<bool> cancelExhibitorMeeting(int meetingId) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.cancelExhibitorMeeting,
+        queryParameters: {"MeetingId": meetingId},
+      );
+
+      if (response.statusCode == 200 &&
+          response.data is List &&
+          response.data.isNotEmpty) {
+        return response.data.first["Code"] == "1";
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint("Cancel Exhibitor Meeting Error : $e");
+      return false;
+    }
+  }
+
+  Future<bool> cancelVisitorMeeting(int meetingId) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.cancelVisitorMeeting,
+        queryParameters: {"MeetingId": meetingId},
+      );
+
+      if (response.statusCode == 200 &&
+          response.data is List &&
+          response.data.isNotEmpty) {
+        return response.data.first["Code"] == "1";
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint("Cancel Visitor Meeting Error : $e");
+      return false;
     }
   }
 }
