@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/Api/dio_client.dart';
+import 'package:elecrama/data/model/exhibitorconnectmodel.dart';
 import 'package:elecrama/data/model/exhibitormeetingmodel.dart';
+import 'package:elecrama/data/model/meetingpersonmodel.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +23,10 @@ class Meetingcontroller extends GetxController {
   RxInt remarkCount = 0.obs;
   final Dio _dio = DioClient.dio;
   final Hiveservice hiveService = Hiveservice();
+
+  RxList<ExhibitorConnectModel> meetingPersons = <ExhibitorConnectModel>[].obs;
+  RxBool hasMeetingPersons = false.obs;
+  RxBool isLoadingMeetingPersons = false.obs;
 
   final List<String> timeSlots = [
     '10:00 AM',
@@ -155,6 +163,118 @@ class Meetingcontroller extends GetxController {
       }
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  Future<void> getMeetingPersons(String exhibitorUserId) async {
+    try {
+      isLoadingMeetingPersons.value = true;
+
+      final response = await _dio.get(
+        ApiConstants.getexhibitorprofile,
+        queryParameters: {'ExhibitorId': exhibitorUserId},
+      );
+
+      meetingPersons.clear();
+      hasMeetingPersons.value = false;
+
+      if (response.statusCode == 200 &&
+          response.data != null &&
+          response.data is List &&
+          response.data.isNotEmpty) {
+        final profile = MeetingPersonModel.fromJson(response.data.first);
+
+        if (profile.exhibitorConnect != null &&
+            profile.exhibitorConnect!.isNotEmpty) {
+          final List<dynamic> decoded = jsonDecode(profile.exhibitorConnect!);
+
+          meetingPersons.value = decoded
+              .map((e) => ExhibitorConnectModel.fromJson(e))
+              .toList();
+
+          hasMeetingPersons.value = meetingPersons.isNotEmpty;
+        }
+      }
+
+      print("Meeting Persons Count : ${meetingPersons.length}");
+
+      for (var person in meetingPersons) {
+        print("${person.id} - ${person.staffName} - ${person.designation}");
+      }
+    } catch (e) {
+      debugPrint("Meeting Person Error : $e");
+
+      meetingPersons.clear();
+      hasMeetingPersons.value = false;
+    } finally {
+      isLoadingMeetingPersons.value = false;
+    }
+  }
+
+  Map<String, String> getHourMinute(String time) {
+    final parts = time.split(' ');
+    final timePart = parts[0];
+    final period = parts[1];
+    int hour = int.parse(timePart.split(':')[0]);
+    final minute = timePart.split(':')[1];
+    if (period == 'PM' && hour != 12) {
+      hour += 12;
+    }
+    if (period == 'AM' && hour == 12) {
+      hour = 0;
+    }
+    return {'hour': hour.toString(), 'minute': minute};
+  }
+
+  Future<void> saveMeeting({
+    required int exhibitorId,
+    required String meetPersonId,
+    required String meetingDate,
+    required String selectedTime,
+    required String role,
+  }) async {
+    try {
+      final timeData = getHourMinute(selectedTime);
+      int visitorId = 0;
+      int createdBy = 0;
+      if (role == 'visitor') {
+        visitorId = hiveService.getVisitorinId();
+        createdBy = 0;
+      } else {
+        visitorId = hiveService.getExhibitorinId();
+        createdBy = 1;
+      }
+      print("VisitorId : $visitorId");
+      print("ExhibitorId : $exhibitorId");
+      print("MeetPersonId : $meetPersonId");
+      print("MeetingDate : $meetingDate");
+      print("MeetingHr : ${timeData['hour']}");
+      print("MeetingMM : ${timeData['minute']}");
+      print("CreatedBy : $createdBy");
+      final response = await _dio.get(
+        ApiConstants.saveVisitorMeeting,
+        queryParameters: {
+          "VisitorId": visitorId,
+          "ExhibitorId": exhibitorId,
+          "MeetPersonId": meetPersonId,
+          "Meetingdate": meetingDate,
+          "MeetingHr": timeData['hour'],
+          "MeetingMM": timeData['minute'],
+          "CreatedBy": createdBy,
+        },
+      );
+      if (response.statusCode == 200 &&
+          response.data is List &&
+          response.data.isNotEmpty) {
+        final result = response.data.first;
+        Get.snackbar("Success", result["Message"] ?? "Meeting Saved");
+        getVisitorMeetings();
+        getExhibitorMeetings();
+      }
+    } catch (e) {
+      debugPrint("Save Meeting Error : $e");
+
+      Get.snackbar("Error", "Failed to save meeting");
     }
   }
 }

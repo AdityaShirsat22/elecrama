@@ -57,7 +57,7 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
         stallNo: favorite.stallNo,
         hallNo: favorite.hallNo,
         txtUserEmailId: '',
-        txtUserId: '',
+        txtUserId: favorite.txtUserID,
         memType: '',
         chairmanname: '',
         chairmandesig: '',
@@ -119,8 +119,19 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
   @override
   void initState() {
     super.initState();
+
     favController.getVisitorFavoriteList();
     meetingController = Get.find<Meetingcontroller>();
+
+    final exhibitor = _resolveExhibitor(Get.arguments);
+
+    print("Role = ${controller.getRole()}");
+
+    print("TxtUserID : ${exhibitor.txtUserId}");
+
+    if (exhibitor.txtUserId.isNotEmpty) {
+      meetingController.getMeetingPersons(exhibitor.txtUserId);
+    }
   }
 
   @override
@@ -412,12 +423,40 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
           const SizedBox(height: 15),
 
           /// PERSON
-          DropdownButtonFormField<String>(
-            decoration: const InputDecoration(border: OutlineInputBorder()),
-            hint: const Text("Select Meeting Person"),
-            items: const [],
-            onChanged: (value) {},
-          ),
+          Obx(() {
+            if (meetingController.isLoadingMeetingPersons.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (!meetingController.hasMeetingPersons.value) {
+              return TextFormField(
+                enabled: false,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "No meeting persons available",
+                ),
+              );
+            }
+
+            return DropdownButtonFormField<String>(
+              value: selectedMeetingPerson,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              hint: const Text("Select Meeting Person"),
+              items: meetingController.meetingPersons.map((person) {
+                return DropdownMenuItem<String>(
+                  value: person.id.toString(),
+                  child: Text(
+                    "${person.staffName} (${person.designation ?? ''})",
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedMeetingPerson = value;
+                });
+              },
+            );
+          }),
 
           const SizedBox(height: 15),
 
@@ -444,6 +483,7 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
             maxLength: 150,
             maxLines: 5,
             decoration: const InputDecoration(
+              hintText: "Enter Note",
               border: OutlineInputBorder(),
               counterText: '',
             ),

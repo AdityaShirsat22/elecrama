@@ -27,4 +27,8 @@ class ApiConstants {
       static const String visitormeetings = "$baseurl/GetVisitorMeeting";
 
       static const String exhibitormeetings = "$baseurl/GetExhibitorUserMeeting";
+
+      static const String getexhibitorprofile = "$baseurl/GetExhibitorProfile";
+
+      static const String saveVisitorMeeting = "$baseurl/SaveVisitorMeeting";
 }
