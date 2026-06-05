@@ -29,4 +29,7 @@ static const multiplelogin = '/multiplelogin';
 
   static const visitormeetings = '/visitorMeetings';
   static const exhibitormeetings = '/exhibitormeetings';
+
+  static const visitornotification = '/visitornotification';
+  static const exhibitornotification = '/exhibitornotification';
 }

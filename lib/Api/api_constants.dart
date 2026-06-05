@@ -22,19 +22,36 @@ class ApiConstants {
   static const String forgetvisitorpassword =
       "https://elecrama25.ngauge.co.in/Visitors/Visitor_Forgot_Password.aspx";
 
-      static const String exhibitordates = "$baseurl/GetExhibitionDates";
+  static const String exhibitordates = "$baseurl/GetExhibitionDates";
 
-      static const String visitormeetings = "$baseurl/GetVisitorMeeting";
+  static const String visitormeetings = "$baseurl/GetVisitorMeeting";
 
-      static const String exhibitormeetings = "$baseurl/GetExhibitorUserMeeting";
+  static const String exhibitormeetings = "$baseurl/GetExhibitorUserMeeting";
 
-      static const String getexhibitorprofile = "$baseurl/GetExhibitorProfile";
+  static const String getexhibitorprofile = "$baseurl/GetExhibitorProfile";
 
-      static const String saveVisitorMeeting = "$baseurl/SaveVisitorMeeting";
+  static const String saveVisitorMeeting = "$baseurl/SaveVisitorMeeting";
 
-      static const String acceptExhibitorMeeting = "$baseurl/AcceptExhibitorMeeting";
+  static const String acceptExhibitorMeeting =
+      "$baseurl/AcceptExhibitorMeeting";
 
-      static const String cancelExhibitorMeeting = "$baseurl/CancelExhibitorMeeting";
+  static const String cancelExhibitorMeeting =
+      "$baseurl/CancelExhibitorMeeting";
 
-      static const String cancelVisitorMeeting = "$baseurl/CancelVisitorMeeting";
+  static const String cancelVisitorMeeting = "$baseurl/CancelVisitorMeeting";
+
+  static const String getnotificationvisitor =
+      "$baseurl/GetNotificationVisitor";
+  static const String getnotificationexhibitor =
+      "$baseurl/GetNotificationExhibitor";
+
+  static const String updatevisitornotifications =
+      "$baseurl/UpdateVisitorNotifications";
+  static const String updateexhibitornotifications =
+      "$baseurl/UpdateExhibitorNotifications";
+
+  static const String updatevisitormailnotifications =
+      "$baseurl/UpdateVisitorMailNotifications";
+  static const String updateexhibitormailnotifications =
+      "$baseurl/UpdateExhibitorMailNotifications";
 }

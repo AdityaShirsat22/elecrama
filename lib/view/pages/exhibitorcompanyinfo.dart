@@ -166,6 +166,7 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
                         child: Container(
                           height: 40,
                           decoration: BoxDecoration(
+                            border: Border.all(color: orange),
                             color: !showRequestMeeting ? orange : Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -664,7 +665,6 @@ class _ExhibitorCompanyInfoScreenState extends State<ExhibitorCompanyInfo> {
 
   void showMeetingSuccessDialog() {
     Get.dialog(
-      
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         content: Column(

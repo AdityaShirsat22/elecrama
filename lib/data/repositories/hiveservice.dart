@@ -57,7 +57,7 @@ class Hiveservice {
     return _box.get('exhibitorId', defaultValue: 0);
   }
 
-   /// VISITOR inID
+  /// VISITOR inID
   void saveVisitorinId(int id) {
     _box.put('visitorinId', id);
   }
@@ -66,13 +66,21 @@ class Hiveservice {
     return _box.get('visitorinId', defaultValue: 0);
   }
 
-    /// EXHIBITOR inID
+  /// EXHIBITOR inID
   void saveExhibitorinId(int id) {
     _box.put('exhibitorinId', id);
   }
 
   int getExhibitorinId() {
     return _box.get('exhibitorinId', defaultValue: 0);
+  }
+
+  void saveExhibitorEmailNotification(bool value) {
+    _box.put('exhibitorEmailNotification', value);
+  }
+
+  bool getExhibitorEmailNotification() {
+    return _box.get('exhibitorEmailNotification', defaultValue: true);
   }
 
   /// LOGOUT

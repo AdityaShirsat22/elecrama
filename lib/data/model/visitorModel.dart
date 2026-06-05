@@ -56,6 +56,13 @@ class VisitorRecord {
   String? mobileNo;
   String? designation;
   String? qrPath;
+  String? facilitationSerivice;
+  String? blOtherCat;
+  String? txtOtherCategory;
+  String? txtOtherSubCategory;
+  String? blNotifictnStatus;
+  String? blMailNotification;
+  String? status;
 
   VisitorRecord({
     this.inId,
@@ -77,6 +84,13 @@ class VisitorRecord {
     this.emailId,
     this.mobileNo,
     this.designation,
+    this.facilitationSerivice,
+    this.blOtherCat,
+    this.txtOtherCategory,
+    this.txtOtherSubCategory,
+    this.blNotifictnStatus,
+    this.blMailNotification,
+    this.status,
     this.qrPath,
   });
 
@@ -100,6 +114,13 @@ class VisitorRecord {
     emailId: json["EmailId"],
     mobileNo: json["MobileNo"],
     designation: json["Designation"],
+    facilitationSerivice: json["facilitationSerivice"],
+    blOtherCat: json["blOtherCat"],
+    txtOtherCategory: json["txtOtherCategory"],
+    txtOtherSubCategory: json["txtOtherSubCategory"],
+    blNotifictnStatus: json["blNotifictnStatus"],
+    blMailNotification: json["blMailNotification"],
+    status: json["Status"],
     qrPath: json["QRPath"],
   );
 
@@ -123,6 +144,13 @@ class VisitorRecord {
     "EmailId": emailId,
     "MobileNo": mobileNo,
     "Designation": designation,
+    "facilitationSerivice": facilitationSerivice,
+    "blOtherCat": blOtherCat,
+    "txtOtherCategory": txtOtherCategory,
+    "txtOtherSubCategory": txtOtherSubCategory,
+    "blNotifictnStatus": blNotifictnStatus,
+    "blMailNotification": blMailNotification,
+    "Status": status,
     "QRPath": qrPath,
   };
 }

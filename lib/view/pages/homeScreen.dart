@@ -98,7 +98,21 @@ class Homescreen extends GetView<HomeController> {
             icon: Icon(Icons.settings, color: white),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              final authController = Get.find<AuthController>();
+              if (authController.isLoggedIn()) {
+                final role = authController.getRole();
+                if (role == 'visitor') {
+                  Get.toNamed(AppRoutes.visitornotification);
+                  return;
+                }
+                if (role == 'exhibitor') {
+                  Get.toNamed(AppRoutes.exhibitornotification);
+                  return;
+                }
+              }
+              Get.to(() => Multipleloginscreen());
+            },
             icon: Icon(Icons.notifications, color: white),
           ),
         ],
