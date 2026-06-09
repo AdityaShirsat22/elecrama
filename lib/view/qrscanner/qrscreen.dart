@@ -1,5 +1,7 @@
 import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
+import 'package:elecrama/view/qrscanner/qrScannerScreen.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +62,17 @@ class _QrscreenState extends State<Qrscreen> {
             SizedBox(height: 120),
 
             InkWell(
-              onTap: () {},
+              onTap: () {
+                final authController = Get.find<AuthController>();
+                if (authController.isLoggedIn()) {
+                  final role = authController.getRole();
+                  if (role == 'exhibitor' || role == 'visitor') {
+                    Get.to(QrScannerScreen(type: "badge"));
+                    return;
+                  }
+                }
+                Get.toNamed(AppRoutes.multiplelogin);
+              },
               child: Column(
                 children: [
                   Container(
@@ -88,7 +100,17 @@ class _QrscreenState extends State<Qrscreen> {
             Divider(height: 40, thickness: 1),
             SizedBox(height: 20),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                final authController = Get.find<AuthController>();
+                if (authController.isLoggedIn()) {
+                  final role = authController.getRole();
+                  if (role == 'exhibitor' || role == 'visitor') {
+                    Get.to(QrScannerScreen(type: "stall"));
+                    return;
+                  }
+                }
+                Get.toNamed(AppRoutes.multiplelogin);
+              },
               child: Column(
                 children: [
                   Container(

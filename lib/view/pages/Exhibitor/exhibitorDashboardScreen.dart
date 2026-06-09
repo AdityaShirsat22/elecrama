@@ -51,6 +51,8 @@ class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
                           'Tap',
                           'Scan Contacts clicked',
                           snackPosition: SnackPosition.BOTTOM,
+                          animationDuration: Duration(milliseconds: 300),
+                          duration: Duration(seconds: 1),
                         );
                       },
                     ),
@@ -92,6 +94,8 @@ class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
                           'Tap',
                           'My B2B Meetings clicked',
                           snackPosition: SnackPosition.BOTTOM,
+                          animationDuration: Duration(milliseconds: 300),
+                          duration: Duration(seconds: 1),
                         );
                       },
                     ),
@@ -133,6 +137,8 @@ class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
                           'Tap',
                           'Important Contacts clicked',
                           snackPosition: SnackPosition.BOTTOM,
+                          animationDuration: Duration(milliseconds: 300),
+                          duration: Duration(seconds: 1),
                         );
                       },
                     ),

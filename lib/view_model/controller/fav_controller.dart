@@ -115,8 +115,5 @@ class FavoriteController extends GetxController {
     }
   }
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   }
+
 }

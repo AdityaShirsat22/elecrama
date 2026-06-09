@@ -58,7 +58,7 @@ class Exhibitorprofilescreen extends StatelessWidget {
         final mobile = data.stMobileNo ?? '';
         final email = data.stEmailId ?? '';
         //final country = data.stcountry ?? '';
-        final qrpath = data.qrPath;
+        //final qrpath = data.qrPath;
         final exhibitorid = data.exhibitorId ?? '';
         final exhibitoruserid = data.exhibitorUserId ?? '';
 
@@ -69,8 +69,8 @@ class Exhibitorprofilescreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: 10),
-                Image.network(qrpath ?? '', height: 150, width: 150),
 
+                // Image.network(qrpath ?? '', height: 150, width: 150),
                 SizedBox(height: 30),
 
                 _infoRow("Exhibitor Badge No", exhibitorBadgeNo),

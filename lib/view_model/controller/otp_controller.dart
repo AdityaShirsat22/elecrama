@@ -24,13 +24,31 @@ class OtpController extends GetxController {
 
       if (data.code == "1") {
         generatedOtp.value = data.otp ?? '';
-        Get.snackbar("Success", data.message ?? "OTP Sent");
+        Get.snackbar(
+          "Success",
+          data.message ?? "OTP Sent",
+          snackPosition: SnackPosition.BOTTOM,
+          animationDuration: Duration(milliseconds: 300),
+          duration: Duration(seconds: 1),
+        );
       } else {
-        Get.snackbar("Error", data.message ?? "Something went wrong");
+        Get.snackbar(
+          "Error",
+          data.message ?? "Something went wrong",
+          snackPosition: SnackPosition.BOTTOM,
+          animationDuration: Duration(milliseconds: 300),
+          duration: Duration(seconds: 1),
+        );
       }
     } catch (e) {
       print(e);
-      Get.snackbar("Error", e.toString());
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
+      );
     } finally {
       isLoading.value = false;
     }
@@ -42,10 +60,22 @@ class OtpController extends GetxController {
 
   void verifyOtp() {
     if (otpTextController.text.trim() == otpData.value?.otp) {
-      Get.snackbar("Success", "OTP Verified Successfully");
+      Get.snackbar(
+        "Success",
+        "OTP Verified Successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
+      );
       Get.offAllNamed('/exhibitorHome');
     } else {
-      Get.snackbar("Error", "Invalid OTP");
+      Get.snackbar(
+        "Error",
+        "Invalid OTP",
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
+      );
     }
   }
 }

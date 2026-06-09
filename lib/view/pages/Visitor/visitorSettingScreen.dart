@@ -1,4 +1,5 @@
 import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,15 @@ class Visitorsettingscreen extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
+              onTap: () {
+                Get.snackbar(
+                  'Tap',
+                  'changed pass clicked',
+                  snackPosition: SnackPosition.BOTTOM,
+                  animationDuration: Duration(milliseconds: 300),
+                  duration: Duration(seconds: 1),
+                );
+              },
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(1),
                 borderSide: BorderSide(width: 0.1),
@@ -27,6 +37,9 @@ class Visitorsettingscreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ListTile(
+              onTap: () {
+                Get.offNamed(AppRoutes.visitornotification);
+              },
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(1),
                 borderSide: BorderSide(width: 0.1),
@@ -71,6 +84,15 @@ class Visitorsettingscreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ListTile(
+              onTap: () {
+                Get.snackbar(
+                  'Tap',
+                  ' delete acc clicked',
+                  snackPosition: SnackPosition.BOTTOM,
+                  animationDuration: Duration(milliseconds: 300),
+                  duration: Duration(seconds: 1),
+                );
+              },
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(1),
                 borderSide: BorderSide(width: 0.1),

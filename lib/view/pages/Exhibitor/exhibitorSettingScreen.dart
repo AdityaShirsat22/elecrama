@@ -1,4 +1,5 @@
 import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,9 @@ class ExhibitorsettingScreen extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
+              onTap: () {
+                Get.toNamed(AppRoutes.exhibitornotification);
+              },
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(1),
                 borderSide: BorderSide(width: 0.1),
@@ -63,6 +67,15 @@ class ExhibitorsettingScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ListTile(
+              onTap: () {
+                Get.snackbar(
+                  "tap",
+                  "you clicked on the button",
+                  snackPosition: SnackPosition.BOTTOM,
+                  animationDuration: Duration(seconds: 1),
+                  duration: Duration(seconds: 1),
+                );
+              },
               shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(1),
                 borderSide: BorderSide(width: 0.1),

@@ -64,7 +64,13 @@ class ExhibitorNotificationController extends GetxController {
     if (success) {
       await getExhibitorNotifications();
 
-      Get.snackbar("Success", "Notification status updated successfully");
+      Get.snackbar(
+        "Success",
+        "Notification status updated successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
+      );
     } else {
       notificationOn.value = !value;
 
@@ -82,11 +88,23 @@ class ExhibitorNotificationController extends GetxController {
 
     if (success) {
       hiveService.saveExhibitorEmailNotification(value);
-      Get.snackbar("Success", "Email status updated successfully");
+      Get.snackbar(
+        "Success",
+        "Email status updated successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
+      );
     } else {
       emailOn.value = !value;
 
-      Get.snackbar("Error", "Failed to update email status");
+      Get.snackbar(
+        "Error",
+        "Failed to update email status",
+        snackPosition: SnackPosition.BOTTOM,
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
+      );
     }
   }
 

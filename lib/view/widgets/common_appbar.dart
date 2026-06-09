@@ -88,7 +88,7 @@ final AppBar appbar = AppBar(
     ),
     IconButton(
       onPressed: () {
-         final authController = Get.find<AuthController>();
+        final authController = Get.find<AuthController>();
         if (authController.isLoggedIn()) {
           final role = authController.getRole();
           if (role == 'visitor') {
@@ -112,7 +112,14 @@ final AppBar appbar = AppBar(
       alignment: Alignment.centerLeft,
       padding: EdgeInsets.symmetric(horizontal: 8),
       child: TextButton.icon(
-        onPressed: () => Get.back(),
+        onPressed: () {
+          if (Get.currentRoute == AppRoutes.visitorHome ||
+              Get.currentRoute == AppRoutes.exhibitorHome) {
+            Get.offAllNamed('/home');
+          } else {
+            Get.back();
+          }
+        },
         icon: Icon(Icons.arrow_back, color: white, size: 20),
         label: Text("Back", style: TextStyle(color: white, fontSize: 18)),
       ),

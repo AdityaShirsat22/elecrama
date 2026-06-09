@@ -24,7 +24,7 @@ import 'package:elecrama/view/pages/meetings/exhibitorMeetings.dart';
 import 'package:elecrama/view/pages/meetings/visitorMeetings.dart';
 import 'package:elecrama/view/pages/notifcation/exhibitor_notification_screen.dart';
 import 'package:elecrama/view/pages/notifcation/visitor_notification_screen.dart';
-import 'package:elecrama/view/pages/qrscreen.dart';
+import 'package:elecrama/view/qrscanner/qrscreen.dart';
 import 'package:get/get.dart';
 
 class AppPages {

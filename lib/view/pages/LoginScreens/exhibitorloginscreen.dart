@@ -77,7 +77,10 @@ class _ExhibitorloginscreenState extends State<Exhibitorloginscreen> {
                       if (success) {
                         Get.toNamed('/exhibitorDetails');
                       } else {
-                        Get.snackbar("Error", "Email not found");
+                        Get.snackbar("Error", "Email not found",
+                            snackPosition: SnackPosition.BOTTOM,
+                            animationDuration: Duration(milliseconds: 300),
+                            duration: Duration(seconds: 1));
                       }
                     }
                   },

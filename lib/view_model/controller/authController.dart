@@ -119,6 +119,8 @@ class AuthController extends GetxController {
           icon: const Icon(Icons.error_outline, color: Colors.white),
           borderRadius: 10,
           margin: const EdgeInsets.all(16),
+          animationDuration: Duration(milliseconds: 300),
+          duration: Duration(seconds: 1),
         );
         return false;
       }
@@ -136,6 +138,8 @@ class AuthController extends GetxController {
         icon: const Icon(Icons.error_outline, color: Colors.white),
         borderRadius: 10,
         margin: const EdgeInsets.all(16),
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
       );
       return false;
     } finally {

@@ -62,8 +62,10 @@ class NotificationController extends GetxController {
 
       Get.snackbar(
         snackPosition: SnackPosition.BOTTOM,
+        "Tap",
         "Notifications status updated Successfully",
-        "",
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
       );
     }
   }
@@ -83,8 +85,10 @@ class NotificationController extends GetxController {
 
       Get.snackbar(
         snackPosition: SnackPosition.BOTTOM,
+        "Tap",
         "Email Notifications status updated Successfully",
-        "",
+        animationDuration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 1),
       );
     }
   }

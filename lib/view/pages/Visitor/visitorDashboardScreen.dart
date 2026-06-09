@@ -53,6 +53,8 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                           'Tap',
                           'Scan Contacts clicked',
                           snackPosition: SnackPosition.BOTTOM,
+                          animationDuration: Duration(milliseconds: 300),
+                          duration: Duration(seconds: 1),
                         );
                       },
                     ),
@@ -113,6 +115,8 @@ class _ExhibitordashboardscreenState extends State<Visitordashboardscreen> {
                           'Tap',
                           'Important Contacts clicked',
                           snackPosition: SnackPosition.BOTTOM,
+                          animationDuration: Duration(milliseconds: 300),
+                          duration: Duration(seconds: 1),
                         );
                       },
                     ),
