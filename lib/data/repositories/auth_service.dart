@@ -7,9 +7,12 @@ import 'package:elecrama/Api/dio_client.dart';
 import 'package:elecrama/data/model/exhibitorlists.dart';
 import 'package:elecrama/data/model/exhibitormodel.dart';
 import 'package:elecrama/data/model/visitormodel.dart';
+import 'package:elecrama/data/repositories/cache_service.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 
 class AuthService {
   final Dio _dio = DioClient.dio;
+  final CacheService _cache = CacheService();
 
   //visitorlogin
   Future<Response> visitorLogin({
@@ -133,31 +136,80 @@ class AuthService {
     String searchText = "",
   }) async {
     try {
-      final response = await _dio.get(
-        ApiConstants.exhibitorlist,
-        options: Options(
-          responseType: ResponseType.plain,
-          headers: {"Accept": "application/json", "User-Agent": "Mozilla/5.0"},
-        ),
-        queryParameters: {
-          "SearchText": searchText,
-          "VisitorID": 0,
-          "blVisitor": 1,
-          "Category": "",
-          "Hall": "",
-          "Page": 1,
-          "country": "",
-        },
-      );
+      final isOnline = await NetworkService.isConnected();
 
-      if (response.data == null || response.data.toString().trim().isEmpty) {
-        return [];
+      // Only cache full exhibitor list
+      final bool shouldUseCache = searchText.isEmpty;
+
+      if (isOnline) {
+        final response = await _dio.get(
+          ApiConstants.exhibitorlist,
+          options: Options(
+            responseType: ResponseType.plain,
+            headers: {
+              "Accept": "application/json",
+              "User-Agent": "Mozilla/5.0",
+            },
+          ),
+          queryParameters: {
+            "SearchText": searchText,
+            "VisitorID": 0,
+            "blVisitor": 1,
+            "Category": "",
+            "Hall": "",
+            "Page": 1,
+            "country": "",
+          },
+        );
+
+        if (response.data == null || response.data.toString().trim().isEmpty) {
+          return [];
+        }
+
+        // Save only master list
+        if (shouldUseCache) {
+          _cache.save('exhibitor_list', response.data);
+        }
+
+        final List<dynamic> data = jsonDecode(response.data);
+
+        return data.map((e) => ExhibitorLists.fromJson(e)).toList();
       }
 
-      final List<dynamic> data = jsonDecode(response.data);
+      // OFFLINE MODE
+      final cachedData = _cache.get('exhibitor_list');
 
-      return data.map((e) => ExhibitorLists.fromJson(e)).toList();
+      if (cachedData != null) {
+        final List<dynamic> data = jsonDecode(cachedData);
+
+        List<ExhibitorLists> exhibitors = data
+            .map((e) => ExhibitorLists.fromJson(e))
+            .toList();
+
+        // Offline Search
+        if (searchText.isNotEmpty) {
+          exhibitors = exhibitors.where((item) {
+            return (item.companyName).toLowerCase().contains(
+              searchText.toLowerCase(),
+            );
+          }).toList();
+        }
+
+        return exhibitors;
+      }
+
+      return [];
     } catch (e) {
+      // Fallback to cache if API fails
+
+      final cachedData = _cache.get('exhibitor_list');
+
+      if (cachedData != null) {
+        final List<dynamic> data = jsonDecode(cachedData);
+
+        return data.map((e) => ExhibitorLists.fromJson(e)).toList();
+      }
+
       throw Exception("error fetching exhibitorlist $e");
     }
   }

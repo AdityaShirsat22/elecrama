@@ -3,8 +3,10 @@ import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/Api/dio_client.dart';
 import 'package:elecrama/data/model/exhibitormodel.dart';
 import 'package:elecrama/data/repositories/auth_service.dart';
+import 'package:elecrama/data/repositories/cache_service.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
 import 'package:elecrama/data/model/visitormodel.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -236,40 +238,57 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<List<dynamic>> getCachedList({
+    required String cacheKey,
+    required String url,
+  }) async {
+    final cache = CacheService();
+
+    try {
+      final isOnline = await NetworkService.isConnected();
+
+      if (isOnline) {
+        final response = await _dio.get(url);
+
+        cache.save(cacheKey, response.data);
+
+        return response.data;
+      }
+
+      return cache.get(cacheKey) ?? [];
+    } catch (e) {
+      return cache.get(cacheKey) ?? [];
+    }
+  }
+
+  //hall list
   Future<void> getHallList() async {
-    try {
-      final response = await _dio.get(ApiConstants.exhibitorhalllist);
-
-      if (response.statusCode == 200) {
-        hallList.assignAll(response.data);
-      }
-    } catch (e) {
-      print(e);
-    }
+    hallList.assignAll(
+      await getCachedList(
+        cacheKey: 'hall_list',
+        url: ApiConstants.exhibitorhalllist,
+      ),
+    );
   }
 
+  //country list
   Future<void> getCountryList() async {
-    try {
-      final response = await _dio.get(ApiConstants.countrylist);
-
-      if (response.statusCode == 200) {
-        countryList.assignAll(response.data);
-      }
-    } catch (e) {
-      print(e);
-    }
+    countryList.assignAll(
+      await getCachedList(
+        cacheKey: 'country_list',
+        url: ApiConstants.countrylist,
+      ),
+    );
   }
 
+  //product category list
   Future<void> getProductCategoryList() async {
-    try {
-      final response = await _dio.get(ApiConstants.subcategorylist);
-
-      if (response.statusCode == 200) {
-        productCategoryList.assignAll(response.data);
-      }
-    } catch (e) {
-      print(e);
-    }
+    productCategoryList.assignAll(
+      await getCachedList(
+        cacheKey: 'product_category_list',
+        url: ApiConstants.subcategorylist,
+      ),
+    );
   }
 
   //APPLY FILTERS

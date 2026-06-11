@@ -11,6 +11,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('authBox');
+  await Hive.openBox('cacheBox');
+  await Hive.openBox('syncBox');
 
   runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
 }
