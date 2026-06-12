@@ -65,10 +65,24 @@ class AuthController extends GetxController {
     if (role == 'visitor' && email != null) {
       await getVisitorDetails(email);
       visitorId.value = _hive.getVisitorId();
+
+      await Future.wait([
+        getExhitorsList(),
+        getHallList(),
+        getCountryList(),
+        getProductCategoryList(),
+      ]);
     }
     if (role == 'exhibitor' && email != null) {
       await getExhibitorDetails(email);
       exhibitorId.value = _hive.getExhibitorId();
+
+      await Future.wait([
+        getExhitorsList(),
+        getHallList(),
+        getCountryList(),
+        getProductCategoryList(),
+      ]);
     }
   }
 
@@ -223,6 +237,7 @@ class AuthController extends GetxController {
   //product category search
   RxString productCategorySearch = ''.obs;
 
+  //exhibitor list
   Future<void> getExhitorsList({String search = ""}) async {
     try {
       final data = await _service.fetchExhibitorLists(searchText: search);

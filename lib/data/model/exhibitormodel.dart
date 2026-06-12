@@ -23,7 +23,9 @@ class ExhibitorDetails {
         records: json["Records"] == null
             ? []
             : List<ExhibitorRecord>.from(
-                json["Records"]!.map((x) => ExhibitorRecord.fromMap(x)),
+                json["Records"].map(
+                  (x) => ExhibitorRecord.fromMap(Map<String, dynamic>.from(x)),
+                ),
               ),
       );
 

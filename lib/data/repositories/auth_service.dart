@@ -81,8 +81,11 @@ class AuthService {
       // OFFLINE
       final cachedData = cache.get('visitor_profile');
 
+      print("CACHED VISITOR DATA:");
+      print(cachedData);
+
       if (cachedData != null) {
-        return VisitorRecord.fromJson(cachedData);
+        return VisitorRecord.fromJson(Map<String, dynamic>.from(cachedData));
       }
 
       return null;
@@ -93,7 +96,7 @@ class AuthService {
       final cachedData = cache.get('visitor_profile');
 
       if (cachedData != null) {
-        return VisitorRecord.fromJson(cachedData);
+        return VisitorRecord.fromJson(Map<String, dynamic>.from(cachedData));
       }
 
       return null;
@@ -115,24 +118,62 @@ class AuthService {
 
   //exhibitor details
   Future<ExhibitorRecord?> fetchExhibitorDetails(String email) async {
+    final cache = CacheService();
+
     try {
-      final response = await _dio.get(
-        ApiConstants.exhibitorLogin,
-        queryParameters: {"EmailId": email.trim()},
-        options: Options(
-          validateStatus: (_) => true,
-          headers: {'Authorization': 'Bearer ${AuthToken.token}'},
-        ),
-      );
+      final isOnline = await NetworkService.isConnected();
 
-      final model = ExhibitorDetails.fromJson(response.data);
+      if (isOnline) {
+        final response = await _dio.get(
+          ApiConstants.exhibitorLogin,
+          queryParameters: {"EmailId": email.trim()},
+          options: Options(
+            validateStatus: (_) => true,
+            headers: {'Authorization': 'Bearer ${AuthToken.token}'},
+          ),
+        );
 
-      if (model.records != null && model.records!.isNotEmpty) {
-        return model.records!.first;
+        // SAVE TO CACHE
+        cache.save('exhibitor_profile_$email', response.data);
+
+        final model = ExhibitorDetails.fromJson(response.data);
+
+        if (model.records != null && model.records!.isNotEmpty) {
+          return model.records!.first;
+        }
+
+        return null;
+      }
+
+      // OFFLINE
+      final cachedData = cache.get('exhibitor_profile_$email');
+
+      if (cachedData != null) {
+        final model = ExhibitorDetails.fromJson(
+          Map<String, dynamic>.from(cachedData),
+        );
+
+        if (model.records != null && model.records!.isNotEmpty) {
+          return model.records!.first;
+        }
       }
 
       return null;
     } catch (e) {
+      // FALLBACK TO CACHE
+
+      final cachedData = cache.get('exhibitor_profile_$email');
+
+      if (cachedData != null) {
+        final model = ExhibitorDetails.fromJson(
+          Map<String, dynamic>.from(cachedData),
+        );
+
+        if (model.records != null && model.records!.isNotEmpty) {
+          return model.records!.first;
+        }
+      }
+
       return null;
     }
   }
