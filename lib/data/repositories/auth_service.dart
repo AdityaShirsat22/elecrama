@@ -49,33 +49,53 @@ class AuthService {
     String userId,
     String password,
   ) async {
+    final cache = CacheService();
+
     try {
-      final response = await _dio.post(
-        ApiConstants.visitorLogin,
-        queryParameters: {
-          "UserID": userId.trim(),
-          "password": password.trim(),
-          "DeviceId":
-              "caVZ55tcTl2Sa8xNkV7Nnu:APA91bEUuvECtiPU_Ivyve-gKzPzaPdvXTiYQP5tLYngEONBXmKEYfNCCSyDKzOv82lU0_hELkL2rNa3yxPuwyL8xKetNduNlCdqCu-RbCFP4DBNLq2bGWQ&blIOS=0",
-          //"blIOS": "false",
-        },
-        options: Options(
-          validateStatus: (_) => true,
-          headers: {'Authorization': 'Bearer ${AuthToken.token}'},
-        ),
-      );
+      final isOnline = await NetworkService.isConnected();
 
-      final visitorRecord = VisitorRecord.fromJson(response.data);
+      // ONLINE
+      if (isOnline) {
+        final response = await _dio.post(
+          ApiConstants.visitorLogin,
+          queryParameters: {
+            "UserID": userId.trim(),
+            "password": password.trim(),
+            "DeviceId":
+                "caVZ55tcTl2Sa8xNkV7Nnu:APA91bEUuvECtiPU_Ivyve-gKzPzaPdvXTiYQP5tLYngEONBXmKEYfNCCSyDKzOv82lU0_hELkL2rNa3yxPuwyL8xKetNduNlCdqCu-RbCFP4DBNLq2bGWQ&blIOS=0",
+          },
+          options: Options(
+            validateStatus: (_) => true,
+            headers: {'Authorization': 'Bearer ${AuthToken.token}'},
+          ),
+        );
 
-      print('Parsed VisitorRecord - Email: ${visitorRecord.emailId}');
+        // SAVE VISITOR PROFILE
+        cache.save('visitor_profile', response.data);
 
-      if (visitorRecord.emailId != null && visitorRecord.emailId!.isNotEmpty) {
-        return visitorRecord;
+        final visitor = VisitorRecord.fromJson(response.data);
+
+        return visitor;
+      }
+
+      // OFFLINE
+      final cachedData = cache.get('visitor_profile');
+
+      if (cachedData != null) {
+        return VisitorRecord.fromJson(cachedData);
       }
 
       return null;
     } catch (e) {
       print('Error fetching visitor details: $e');
+
+      // FALLBACK TO CACHE
+      final cachedData = cache.get('visitor_profile');
+
+      if (cachedData != null) {
+        return VisitorRecord.fromJson(cachedData);
+      }
+
       return null;
     }
   }
