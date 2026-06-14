@@ -1,6 +1,8 @@
 import 'package:elecrama/data/model/exhibitor_fav_model.dart';
 import 'package:elecrama/data/model/visitor_fav_model.dart';
+import 'package:elecrama/data/repositories/cache_service.dart';
 import 'package:elecrama/data/repositories/fav_service.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:get/get.dart';
 
@@ -22,21 +24,48 @@ class FavoriteController extends GetxController {
 
   /// GET VISITOR FAVORITES
   Future<void> getVisitorFavoriteList() async {
+    final cache = CacheService();
+
     try {
       isLoading.value = true;
 
+      final isOnline = await NetworkService.isConnected();
+
+      // OFFLINE
+      if (!isOnline) {
+        final cachedData = cache.get('visitor_favorites');
+
+        if (cachedData != null) {
+          visitorFavoriteList.assignAll(
+            (cachedData as List)
+                .map(
+                  (e) => VisitorFavoriteModel.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ),
+                )
+                .toList(),
+          );
+
+          visitorFavoriteIds.assignAll(
+            visitorFavoriteList.map((e) => e.exhibitorId).toList(),
+          );
+        }
+
+        return;
+      }
+
+      // ONLINE
       final result = await service.getVisitorFavoriteList(
         visitorId: authController.visitorId.value,
       );
 
       visitorFavoriteList.assignAll(result);
 
-      visitorFavoriteIds.assignAll(result.map((e) => e.exhibitorId).toList());
+      visitorFavoriteIds.assignAll(result.map((e) => e.exhibitorId));
+
+      cache.save('visitor_favorites', result.map((e) => e.toJson()).toList());
     } catch (e) {
       print(e);
-
-      visitorFavoriteList.clear();
-      visitorFavoriteIds.clear();
     } finally {
       isLoading.value = false;
     }
@@ -74,21 +103,48 @@ class FavoriteController extends GetxController {
 
   /// GET EXHIBITOR FAVORITES
   Future<void> getExhibitorFavoriteList() async {
+    final cache = CacheService();
+
     try {
       isLoading.value = true;
 
+      final isOnline = await NetworkService.isConnected();
+
+      // OFFLINE
+      if (!isOnline) {
+        final cachedData = cache.get('exhibitor_favorites');
+
+        if (cachedData != null) {
+          exhibitorFavoriteList.assignAll(
+            (cachedData as List)
+                .map(
+                  (e) => ExhibitorFavouriteModel.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ),
+                )
+                .toList(),
+          );
+
+          exhibitorFavoriteIds.assignAll(
+            exhibitorFavoriteList.map((e) => e.inid).toList(),
+          );
+        }
+
+        return;
+      }
+
+      // ONLINE
       final result = await service.getExhibitorFavoriteList(
         exhibitorUserId: authController.exhibitorUserId.value,
       );
 
       exhibitorFavoriteList.assignAll(result);
 
-      exhibitorFavoriteIds.assignAll(result.map((e) => e.inid).toList());
+      exhibitorFavoriteIds.assignAll(result.map((e) => e.inid));
+
+      cache.save('exhibitor_favorites', result.map((e) => e.toJson()).toList());
     } catch (e) {
       print(e);
-
-      exhibitorFavoriteList.clear();
-      exhibitorFavoriteIds.clear();
     } finally {
       isLoading.value = false;
     }
@@ -114,6 +170,4 @@ class FavoriteController extends GetxController {
       print('Toggle Exhibitor Favorite Error : $e');
     }
   }
-
-
 }

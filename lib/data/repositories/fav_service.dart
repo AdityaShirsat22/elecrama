@@ -5,6 +5,8 @@ import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/Api/dio_client.dart';
 import 'package:elecrama/data/model/exhibitor_fav_model.dart';
 import 'package:elecrama/data/model/visitor_fav_model.dart';
+import 'package:elecrama/data/repositories/cache_service.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 
 class FavoriteService {
   final Dio _dio = DioClient.dio;
@@ -12,7 +14,29 @@ class FavoriteService {
   Future<List<VisitorFavoriteModel>> getVisitorFavoriteList({
     required int visitorId,
   }) async {
+    final cache = CacheService();
+
     try {
+      final isOnline = await NetworkService.isConnected();
+
+      // OFFLINE
+      if (!isOnline) {
+        final cachedData = cache.get('visitor_favorites');
+
+        if (cachedData != null) {
+          return (cachedData as List)
+              .map(
+                (item) => VisitorFavoriteModel.fromJson(
+                  Map<String, dynamic>.from(item),
+                ),
+              )
+              .toList();
+        }
+
+        return [];
+      }
+
+      // ONLINE
       final response = await _dio.get(
         ApiConstants.visitorfavlist,
         queryParameters: {
@@ -23,22 +47,42 @@ class FavoriteService {
         },
         options: Options(responseType: ResponseType.plain),
       );
+
       final body = response.data.toString().trim();
+
       if (body.isEmpty) {
         return [];
       }
+
       final decoded = jsonDecode(body);
+
       if (decoded is! List) {
         return [];
       }
+
+      // SAVE RAW RESPONSE
+      cache.save('visitor_favorites', decoded);
+
       return decoded
           .map(
             (item) =>
                 VisitorFavoriteModel.fromJson(item as Map<String, dynamic>),
           )
-          .toList()
-          .cast<VisitorFavoriteModel>();
+          .toList();
     } catch (e) {
+      // CACHE FALLBACK
+      final cachedData = cache.get('visitor_favorites');
+
+      if (cachedData != null) {
+        return (cachedData as List)
+            .map(
+              (item) => VisitorFavoriteModel.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
+            .toList();
+      }
+
       throw Exception('Favorite List Error : $e');
     }
   }
@@ -58,6 +102,7 @@ class FavoriteService {
         return false;
       }
       final decoded = jsonDecode(body);
+
       /// FIXED
       if (decoded is Map<String, dynamic>) {
         return true;
@@ -68,11 +113,31 @@ class FavoriteService {
     }
   }
 
-//exhibitorlist
+  //exhibitorlist
   Future<List<ExhibitorFavouriteModel>> getExhibitorFavoriteList({
     required int exhibitorUserId,
   }) async {
+    final cache = CacheService();
+
     try {
+      final isOnline = await NetworkService.isConnected();
+
+      if (!isOnline) {
+        final cachedData = cache.get('exhibitor_favorites');
+
+        if (cachedData != null) {
+          return (cachedData as List)
+              .map(
+                (item) => ExhibitorFavouriteModel.fromJson(
+                  Map<String, dynamic>.from(item),
+                ),
+              )
+              .toList();
+        }
+
+        return [];
+      }
+
       final response = await _dio.get(
         ApiConstants.exhibitorfavlist,
         queryParameters: {
@@ -83,22 +148,40 @@ class FavoriteService {
         },
         options: Options(responseType: ResponseType.plain),
       );
+
       final body = response.data.toString().trim();
+
       if (body.isEmpty) {
         return [];
       }
+
       final decoded = jsonDecode(body);
+
       if (decoded is! List) {
         return [];
       }
+
+      cache.save('exhibitor_favorites', decoded);
+
       return decoded
           .map(
             (item) =>
                 ExhibitorFavouriteModel.fromJson(item as Map<String, dynamic>),
           )
-          .toList()
-          .cast<ExhibitorFavouriteModel>();
+          .toList();
     } catch (e) {
+      final cachedData = cache.get('exhibitor_favorites');
+
+      if (cachedData != null) {
+        return (cachedData as List)
+            .map(
+              (item) => ExhibitorFavouriteModel.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
+            .toList();
+      }
+
       throw Exception('Favorite List Error : $e');
     }
   }
@@ -110,7 +193,10 @@ class FavoriteService {
     try {
       final response = await _dio.get(
         ApiConstants.exhibitorfavlistadddelete,
-        queryParameters: {'ExhibitorId': exhibitorId, 'ExhibitorUserId': exhibitorUserId},
+        queryParameters: {
+          'ExhibitorId': exhibitorId,
+          'ExhibitorUserId': exhibitorUserId,
+        },
         options: Options(responseType: ResponseType.plain),
       );
       final body = response.data.toString().trim();
@@ -118,6 +204,7 @@ class FavoriteService {
         return false;
       }
       final decoded = jsonDecode(body);
+
       /// FIXED
       if (decoded is Map<String, dynamic>) {
         return true;

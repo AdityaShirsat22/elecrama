@@ -22,4 +22,14 @@ class NotificationModel {
       notificationStatus: json['blNotifictnStatus'] ?? '0',
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'NotificationId': notificationId,
+      'Value': value,
+      'RelatedId': relatedId,
+      'dtCreatedDate': createdDate,
+      'blNotifictnStatus': notificationStatus,
+    };
+  }
 }

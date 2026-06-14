@@ -1,3 +1,5 @@
+import 'package:elecrama/data/repositories/cache_service.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,39 +36,56 @@ class NotificationController extends GetxController {
   }
 
   Future<void> getVisitorNotifications() async {
+    final cache = CacheService();
+
     try {
       isLoading.value = true;
 
+      final isOnline = await NetworkService.isConnected();
+
+      // OFFLINE
+      if (!isOnline) {
+        final cachedData = cache.get('visitor_notifications');
+
+        if (cachedData != null) {
+          notifications.assignAll(
+            (cachedData as List)
+                .map(
+                  (e) =>
+                      NotificationModel.fromJson(Map<String, dynamic>.from(e)),
+                )
+                .toList(),
+          );
+        }
+
+        return;
+      }
+
+      // ONLINE
       final result = await _service.getVisitorNotifications(visitorId);
 
       notifications.assignAll(result);
+
+      cache.save(
+        'visitor_notifications',
+        result.map((e) => e.toJson()).toList(),
+      );
     } catch (e) {
+      final cachedData = cache.get('visitor_notifications');
+
+      if (cachedData != null) {
+        notifications.assignAll(
+          (cachedData as List)
+              .map(
+                (e) => NotificationModel.fromJson(Map<String, dynamic>.from(e)),
+              )
+              .toList(),
+        );
+      }
+
       debugPrint(e.toString());
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  Future<void> updateVisitorNotification(bool value) async {
-    notificationOn.value = value;
-
-    final success = await _service.updateVisitorNotificationStatus(
-      visitorId: visitorId,
-      status: value ? 1 : 0,
-    );
-
-    if (success) {
-      authController.visitor.update((user) {
-        user?.blNotifictnStatus = value ? "1" : "0";
-      });
-
-      Get.snackbar(
-        snackPosition: SnackPosition.BOTTOM,
-        "Tap",
-        "Notifications status updated Successfully",
-        animationDuration: Duration(milliseconds: 300),
-        duration: Duration(seconds: 1),
-      );
     }
   }
 
@@ -92,4 +111,6 @@ class NotificationController extends GetxController {
       );
     }
   }
+
+  void updateVisitorNotification(bool value) {}
 }

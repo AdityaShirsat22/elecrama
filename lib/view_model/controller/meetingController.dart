@@ -6,7 +6,9 @@ import 'package:elecrama/Api/dio_client.dart';
 import 'package:elecrama/data/model/exhibitorconnectmodel.dart';
 import 'package:elecrama/data/model/exhibitormeetingmodel.dart';
 import 'package:elecrama/data/model/meetingpersonmodel.dart';
+import 'package:elecrama/data/repositories/cache_service.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../data/model/visitormeetingmodel.dart';
@@ -70,9 +72,24 @@ class Meetingcontroller extends GetxController {
         if (exhibitionDates.isNotEmpty) {
           selectedDate.value = exhibitionDates.first;
         }
+        CacheService().save('exhibition_dates', response.data);
       }
     } catch (e) {
       debugPrint("Date API Error : $e");
+
+      final cachedData = CacheService().get('exhibition_dates');
+
+      if (cachedData != null) {
+        exhibitionDates.clear();
+
+        for (var item in cachedData) {
+          exhibitionDates.add(item['EventDate']);
+        }
+
+        if (exhibitionDates.isNotEmpty) {
+          selectedDate.value = exhibitionDates.first;
+        }
+      }
     }
   }
 
@@ -113,12 +130,26 @@ class Meetingcontroller extends GetxController {
 
         groupVisitorMeetingsByDate();
 
+        CacheService().save('visitor_meetings', response.data);
+
         print(response.data);
         print(visitorMeetingList.length);
         print(visitorGroupedMeetings);
       }
     } catch (e) {
       debugPrint(e.toString());
+
+      final cachedData = CacheService().get('visitor_meetings');
+
+      if (cachedData != null) {
+        visitorMeetingList.value = (cachedData as List)
+            .map(
+              (e) => VisitorMeetingModel.fromJson(Map<String, dynamic>.from(e)),
+            )
+            .toList();
+
+        groupVisitorMeetingsByDate();
+      }
     }
   }
 
@@ -157,19 +188,67 @@ class Meetingcontroller extends GetxController {
 
         groupExhibitorMeetingsByDate();
 
+        CacheService().save('exhibitor_meetings', response.data);
+
         print(response.data);
         print(exhibitorMeetingList.length);
         print(groupedExhibitorMeetings);
       }
     } catch (e) {
       debugPrint(e.toString());
+
+      final cachedData = CacheService().get('exhibitor_meetings');
+
+      if (cachedData != null) {
+        exhibitorMeetingList.value = (cachedData as List)
+            .map(
+              (e) =>
+                  ExhibitorMeetingModel.fromJson(Map<String, dynamic>.from(e)),
+            )
+            .toList();
+
+        groupExhibitorMeetingsByDate();
+      }
     }
   }
 
   Future<void> getMeetingPersons(String exhibitorUserId) async {
+    final cache = CacheService();
+
     try {
       isLoadingMeetingPersons.value = true;
 
+      final isOnline = await NetworkService.isConnected();
+
+      // OFFLINE MODE
+      if (!isOnline) {
+        final cachedData = cache.get('meeting_persons_$exhibitorUserId');
+
+        if (cachedData != null) {
+          final profile = MeetingPersonModel.fromJson(
+            Map<String, dynamic>.from(cachedData),
+          );
+
+          if (profile.exhibitorConnect != null &&
+              profile.exhibitorConnect!.isNotEmpty) {
+            final List<dynamic> decoded = jsonDecode(profile.exhibitorConnect!);
+
+            meetingPersons.value = decoded
+                .map(
+                  (e) => ExhibitorConnectModel.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ),
+                )
+                .toList();
+
+            hasMeetingPersons.value = meetingPersons.isNotEmpty;
+          }
+        }
+
+        return;
+      }
+
+      // ONLINE MODE
       final response = await _dio.get(
         ApiConstants.getexhibitorprofile,
         queryParameters: {'ExhibitorId': exhibitorUserId},
@@ -182,6 +261,9 @@ class Meetingcontroller extends GetxController {
           response.data != null &&
           response.data is List &&
           response.data.isNotEmpty) {
+        // Save first profile record
+        cache.save('meeting_persons_$exhibitorUserId', response.data.first);
+
         final profile = MeetingPersonModel.fromJson(response.data.first);
 
         if (profile.exhibitorConnect != null &&
@@ -195,17 +277,34 @@ class Meetingcontroller extends GetxController {
           hasMeetingPersons.value = meetingPersons.isNotEmpty;
         }
       }
-
-      print("Meeting Persons Count : ${meetingPersons.length}");
-
-      for (var person in meetingPersons) {
-        print("${person.id} - ${person.staffName} - ${person.designation}");
-      }
     } catch (e) {
       debugPrint("Meeting Person Error : $e");
 
-      meetingPersons.clear();
-      hasMeetingPersons.value = false;
+      // FALLBACK CACHE
+      final cachedData = cache.get('meeting_persons_$exhibitorUserId');
+
+      if (cachedData != null) {
+        try {
+          final profile = MeetingPersonModel.fromJson(
+            Map<String, dynamic>.from(cachedData),
+          );
+
+          if (profile.exhibitorConnect != null &&
+              profile.exhibitorConnect!.isNotEmpty) {
+            final List<dynamic> decoded = jsonDecode(profile.exhibitorConnect!);
+
+            meetingPersons.value = decoded
+                .map(
+                  (e) => ExhibitorConnectModel.fromJson(
+                    Map<String, dynamic>.from(e),
+                  ),
+                )
+                .toList();
+
+            hasMeetingPersons.value = meetingPersons.isNotEmpty;
+          }
+        } catch (_) {}
+      }
     } finally {
       isLoadingMeetingPersons.value = false;
     }
