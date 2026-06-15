@@ -3,6 +3,7 @@ import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
+import 'package:elecrama/view/pages/webviewscreen.dart';
 
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:elecrama/view_model/controller/homecontroller.dart';
@@ -12,31 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Homescreen extends GetView<HomeController> {
   const Homescreen({super.key});
-
-  static const String concurrentEvents =
-      "https://elecrama25.ngauge.co.in/mobileAppPages/Cncurrent_Event.aspx";
-
-  static const String planYourTravel =
-      "https://elecrama25.ngauge.co.in/mobileAppPages/how_to_reach.aspx";
-
-  static const String importantDateAndEvent =
-      "https://elecrama25.ngauge.co.in/mobileAppPages/Event_calender.aspx";
-
-  static const String venueAndLayout =
-      "https://elecrama25.ngauge.co.in/ViewhallLayout.html";
-
-  static const String facilitiesOnGround =
-      "https://elecrama25.ngauge.co.in/mobileAppPages/Facilities_on_the_ground.aspx";
-
-  static const String support =
-      "https://elecrama25.ngauge.co.in/mobileAppPages/Helpline.aspx";
-
-  static const String aboutEvent = "https://elecrama.com/";
-
-  static const String organizers = "https://ieema.org/about-ieema/";
-
-  static const String sponsers =
-      "https://elecrama25.ngauge.co.in/mobileAppPages/Sponsors.aspx";
 
   Future<void> openLink(String url) async {
     if (url.isEmpty) return;
@@ -239,18 +215,25 @@ class Homescreen extends GetView<HomeController> {
                           title: Text("Exhibitors"),
                         ),
                         Divider(color: orange, thickness: 0.1),
+                        // ListTile(
+                        //   leading: Icon(
+                        //     Icons.home_filled,
+                        //     color: orange,
+                        //     size: 30,
+                        //   ),
+                        //   title: Text("Pavilions"),
+                        //   trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                        // ),
+                        // Divider(color: orange, thickness: 0.1),
                         ListTile(
-                          leading: Icon(
-                            Icons.home_filled,
-                            color: orange,
-                            size: 30,
-                          ),
-                          title: Text("Pavilions"),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                        ),
-                        Divider(color: orange, thickness: 0.1),
-                        ListTile(
-                          onTap: () => openLink(concurrentEvents),
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Concurrent Events",
+                                url: ApiConstants.concurrentEvents,
+                              ),
+                            );
+                          },
                           leading: Icon(
                             Icons.event_available,
                             color: orange,
@@ -260,39 +243,55 @@ class Homescreen extends GetView<HomeController> {
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
                         ),
                         Divider(color: orange, thickness: 0.1),
+                        // ListTile(
+                        //   leading: Icon(Icons.people, color: orange, size: 30),
+                        //   title: Text("Townhall Agenda"),
+                        //   trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                        // ),
+                        // Divider(color: orange, thickness: 0.1),
                         ListTile(
-                          leading: Icon(Icons.people, color: orange, size: 30),
-                          title: Text("Townhall Agenda"),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                        ),
-                        Divider(color: orange, thickness: 0.1),
-                        ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Plan Your Travel",
+                                url: ApiConstants.planYourTravel,
+                              ),
+                            );
+                          },
                           leading: Icon(Icons.map, color: orange, size: 30),
                           title: Text("Plan Your Travel"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
                         ),
                         Divider(color: orange, thickness: 0.1),
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Important Dates And Events",
+                                url: ApiConstants.importantDateAndEvent,
+                              ),
+                            );
+                          },
                           leading: Icon(Icons.event, color: orange, size: 30),
                           title: Text("Important Dates And Events"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
                         ),
                         Divider(color: orange, thickness: 0.1),
-                        ListTile(
-                          leading: Icon(
-                            Icons.app_registration,
-                            color: orange,
-                            size: 30,
-                          ),
-                          title: Text("Register"),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                        ),
-                        Divider(color: orange, thickness: 0.1),
-                        ListTile(
-                          leading: Icon(Icons.email, color: orange, size: 30),
-                          title: Text("Invite Friends"),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                        ),
+                        // ListTile(
+                        //   leading: Icon(
+                        //     Icons.app_registration,
+                        //     color: orange,
+                        //     size: 30,
+                        //   ),
+                        //   title: Text("Register"),
+                        //   trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                        // ),
+                        // Divider(color: orange, thickness: 0.1),
+                        // ListTile(
+                        //   leading: Icon(Icons.email, color: orange, size: 30),
+                        //   title: Text("Invite Friends"),
+                        //   trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                        // ),
                       ],
                     ),
                   ),
@@ -313,19 +312,42 @@ class Homescreen extends GetView<HomeController> {
                     child: Column(
                       children: [
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Venue and Layout",
+                                url: ApiConstants.venueAndLayout,
+                              ),
+                            );
+                          },
                           leading: Icon(Icons.dashboard, color: blue, size: 30),
                           title: Text("Venue and Layout"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
                         ),
                         Divider(color: blue, thickness: 0.1),
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Facilities on Ground",
+                                url: ApiConstants.facilitiesOnGround,
+                              ),
+                            );
+                          },
                           leading: Icon(Icons.analytics, color: blue, size: 30),
                           title: Text("Facilities on Ground"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                          onTap: () {},
                         ),
                         Divider(color: blue, thickness: 0.1),
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Support",
+                                url: ApiConstants.support,
+                              ),
+                            );
+                          },
                           leading: Icon(
                             Icons.support_agent,
                             color: blue,
@@ -333,19 +355,18 @@ class Homescreen extends GetView<HomeController> {
                           ),
                           title: Text("Support"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                          onTap: () {},
                         ),
-                        Divider(color: blue, thickness: 0.1),
-                        ListTile(
-                          leading: Icon(
-                            Icons.feedback_sharp,
-                            color: blue,
-                            size: 30,
-                          ),
-                          title: Text("Feedback"),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                          onTap: () {},
-                        ),
+                        // Divider(color: blue, thickness: 0.1),
+                        // ListTile(
+                        //   leading: Icon(
+                        //     Icons.feedback_sharp,
+                        //     color: blue,
+                        //     size: 30,
+                        //   ),
+                        //   title: Text("Feedback"),
+                        //   trailing: Icon(Icons.arrow_forward_ios, size: 20),
+                        //   onTap: () {},
+                        // ),
                       ],
                     ),
                   ),
@@ -366,6 +387,14 @@ class Homescreen extends GetView<HomeController> {
                     child: Column(
                       children: [
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "About Event",
+                                url: ApiConstants.aboutEvent,
+                              ),
+                            );
+                          },
                           leading: Icon(
                             Icons.dashboard,
                             color: green,
@@ -376,6 +405,14 @@ class Homescreen extends GetView<HomeController> {
                         ),
                         Divider(color: green, thickness: 0.3),
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Organizers",
+                                url: ApiConstants.organizers,
+                              ),
+                            );
+                          },
                           leading: Icon(
                             Icons.meeting_room,
                             color: green,
@@ -383,10 +420,17 @@ class Homescreen extends GetView<HomeController> {
                           ),
                           title: Text("Organizers"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                          onTap: () {},
                         ),
                         Divider(color: green, thickness: 0.3),
                         ListTile(
+                          onTap: () {
+                            Get.to(
+                              () => const WebViewScreen(
+                                title: "Sponsers",
+                                url: ApiConstants.sponsers,
+                              ),
+                            );
+                          },
                           leading: Icon(
                             Icons.attach_money,
                             color: green,
@@ -394,7 +438,6 @@ class Homescreen extends GetView<HomeController> {
                           ),
                           title: Text("Sponser"),
                           trailing: Icon(Icons.arrow_forward_ios, size: 20),
-                          onTap: () {},
                         ),
                       ],
                     ),

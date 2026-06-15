@@ -1,4 +1,6 @@
+import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/core/colors_theme.dart';
+import 'package:elecrama/view/pages/webviewscreen.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
 import 'package:elecrama/view_model/controller/authController.dart';
 import 'package:flutter/material.dart';
@@ -133,12 +135,11 @@ class _ExhibitordashboardscreenState extends State<Exhibitordashboardscreen> {
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 18),
                       onTap: () {
-                        Get.snackbar(
-                          'Tap',
-                          'Important Contacts clicked',
-                          snackPosition: SnackPosition.BOTTOM,
-                          animationDuration: Duration(milliseconds: 300),
-                          duration: Duration(seconds: 1),
+                        Get.to(
+                          () => const WebViewScreen(
+                            title: "Important Contacts",
+                            url: ApiConstants.support,
+                          ),
                         );
                       },
                     ),
