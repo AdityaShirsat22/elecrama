@@ -1,7 +1,7 @@
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/widgets/common_appbar.dart';
-import 'package:elecrama/view_model/controller/notification_controller.dart';
+import 'package:elecrama/view_model/controller/visitor_notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

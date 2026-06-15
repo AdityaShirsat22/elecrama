@@ -1,5 +1,7 @@
 import 'package:elecrama/data/model/notificationmodel.dart';
 import 'package:elecrama/data/repositories/hiveservice.dart';
+import 'package:elecrama/data/repositories/cache_service.dart';
+import 'package:elecrama/data/repositories/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -35,18 +37,66 @@ class ExhibitorNotificationController extends GetxController {
   }
 
   Future<void> getExhibitorNotifications() async {
+    final cache = CacheService();
+
     try {
       isLoading.value = true;
 
+      final isOnline = await NetworkService.isConnected();
+
+      // OFFLINE
+      if (!isOnline) {
+        final cachedData = cache.get('exhibitor_notifications');
+
+        if (cachedData != null) {
+          notifications.assignAll(
+            (cachedData as List)
+                .map(
+                  (e) =>
+                      NotificationModel.fromJson(Map<String, dynamic>.from(e)),
+                )
+                .toList(),
+          );
+
+          if (notifications.isNotEmpty) {
+            notificationOn.value =
+                notifications.first.notificationStatus == "1";
+          }
+        }
+
+        return;
+      }
+
+      // ONLINE
       final result = await _service.getExhibitorNotifications(exhibitorId);
 
       notifications.assignAll(result);
 
-      /// Notification switch state from API
       if (result.isNotEmpty) {
         notificationOn.value = result.first.notificationStatus == "1";
       }
+
+      cache.save(
+        'exhibitor_notifications_$exhibitorId',
+        result.map((e) => e.toJson()).toList(),
+      );
     } catch (e) {
+      final cachedData = cache.get('exhibitor_notifications_$exhibitorId');
+
+      if (cachedData != null) {
+        notifications.assignAll(
+          (cachedData as List)
+              .map(
+                (e) => NotificationModel.fromJson(Map<String, dynamic>.from(e)),
+              )
+              .toList(),
+        );
+
+        if (notifications.isNotEmpty) {
+          notificationOn.value = notifications.first.notificationStatus == "1";
+        }
+      }
+
       debugPrint("Exhibitor Notification Error : $e");
     } finally {
       isLoading.value = false;

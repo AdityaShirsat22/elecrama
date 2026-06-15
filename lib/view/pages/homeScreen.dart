@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:elecrama/Api/api_constants.dart';
 import 'package:elecrama/core/colors_theme.dart';
 import 'package:elecrama/routes/app_routes.dart';
 import 'package:elecrama/view/pages/LoginScreens/multipleloginscreen.dart';
@@ -11,6 +12,31 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Homescreen extends GetView<HomeController> {
   const Homescreen({super.key});
+
+  static const String concurrentEvents =
+      "https://elecrama25.ngauge.co.in/mobileAppPages/Cncurrent_Event.aspx";
+
+  static const String planYourTravel =
+      "https://elecrama25.ngauge.co.in/mobileAppPages/how_to_reach.aspx";
+
+  static const String importantDateAndEvent =
+      "https://elecrama25.ngauge.co.in/mobileAppPages/Event_calender.aspx";
+
+  static const String venueAndLayout =
+      "https://elecrama25.ngauge.co.in/ViewhallLayout.html";
+
+  static const String facilitiesOnGround =
+      "https://elecrama25.ngauge.co.in/mobileAppPages/Facilities_on_the_ground.aspx";
+
+  static const String support =
+      "https://elecrama25.ngauge.co.in/mobileAppPages/Helpline.aspx";
+
+  static const String aboutEvent = "https://elecrama.com/";
+
+  static const String organizers = "https://ieema.org/about-ieema/";
+
+  static const String sponsers =
+      "https://elecrama25.ngauge.co.in/mobileAppPages/Sponsors.aspx";
 
   Future<void> openLink(String url) async {
     if (url.isEmpty) return;
@@ -224,6 +250,7 @@ class Homescreen extends GetView<HomeController> {
                         ),
                         Divider(color: orange, thickness: 0.1),
                         ListTile(
+                          onTap: () => openLink(concurrentEvents),
                           leading: Icon(
                             Icons.event_available,
                             color: orange,
